@@ -1,9 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My GitHub Page</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3em;
+      font-family: sans-serif;
+      transition: background 0.5s;
+    }
+  </style>
 </head>
 <body>
-  <h1>こんにちは！GitHub Pagesへようこそ</h1>
+  <div id="clock"></div>
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      const hex = `#${h}${m}${s}`;
+      document.body.style.background = hex;
+      document.getElementById('clock').textContent = hex;
+    }
+    setInterval(updateClock, 1000);
+  </script>
 </body>
 </html>
