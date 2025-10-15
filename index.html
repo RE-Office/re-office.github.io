@@ -1,32 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 3em;
-      font-family: sans-serif;
-      transition: background 0.5s;
-    }
-  </style>
-</head>
-<body>
-  <div id="clock"></div>
-  <script>
-    function updateClock() {
-      const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-      const hex = `#${h}${m}${s}`;
-      document.body.style.background = hex;
-      document.getElementById('clock').textContent = hex;
-    }
-    setInterval(updateClock, 1000);
-  </script>
-</body>
-</html>
+<button onclick="openModal()">開く</button>
+<div id="modal" style="display:none; position:fixed; top:30%; left:30%; background:#fff; padding:20px;">
+  <p>モーダルの中身</p>
+  <button onclick="closeModal()">閉じる</button>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById('modal').style.display = 'block';
+  }
+  function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+  }
+</script>
