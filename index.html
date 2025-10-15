@@ -1,15 +1,82 @@
-<button onclick="openModal()">開く</button>
-<div id="modal" style="display:none; position:fixed; top:30%; left:30%; background:#fff; padding:20px;">
-  <p>モーダルの中身</p>
-  <button onclick="closeModal()">閉じる</button>
-</div>
-<a href="file:///C:/Users/" target="_blank">ドキュメントを開く</a>
-
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title>Microsoft Translator テキスト API で英訳を行うサンプルコード</title>
+<meta charset="utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
-  function openModal() {
-    document.getElementById('modal').style.display = 'block';
-  }
-  function closeModal() {
-    document.getElementById('modal').style.display = 'none';
-  }
+
+  "use strict"
+
+  $(function() {
+
+// 文字が入力されたらイベント発火
+
+    $("#word").change(function() {
+
+// 認証トークンを取得するための関数 [getToken] を定義
+// http://docs.microsofttranslator.com/oauth-token.html
+
+      const getToken = function() {
+        const defer = $.Deferred();
+        $.ajax({
+          url: 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken',
+          type: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/jwt',
+            'Ocp-Apim-Subscription-Key': 'Azureで取得したキーの文字列を記述します',
+          },
+        }).done(function(data) {
+
+            const token = data;
+            defer.resolve(token);
+
+        });
+            return defer.promise();
+      };
+
+// 関数 [getToken] 実行後、取得したトークンを 引き渡す
+// フォームから入力したデータとともに、 Microsoft Translator テキストAPIへ送信
+
+      $.when(getToken()).done(function(token) {
+        const key = 'Bearer ' + token;
+        const text = $("#word").val();
+        const response = $.ajax({
+          url: 'https://api.microsofttranslator.com/v2/http.svc/Translate',
+          type: 'GET',
+          data: {
+            'appid': key,
+            'Accept': 'application/xml',
+            'text': text,
+            'to': 'en',
+          },
+        async: false,
+        })
+
+// Translator テキスト APIを通じて取得したデータから、翻訳語が含まれるプロパティを取得
+// replace関数でタグを除去し、翻訳データのみを抽出して表示する
+
+        const data = response.responseText;
+
+        const translation = data.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
+
+        $("#english").text(translation);
+      })
+    })
+  })
+ 
 </script>
+</head>
+
+<body>
+
+  <h1>Microsoft Translator テキスト API サンプル</h1>
+  <h2>入力データを英語に翻訳します。</h2>
+
+  <input type="text" id="word" placeholder="何か入力してください" size="40">
+  <div id="english"></div>
+
+
+</body>
+</html>
