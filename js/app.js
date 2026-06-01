@@ -156,16 +156,32 @@ document.getElementById("cancelBtn").addEventListener("click", () => {
 
 document.getElementById("saveBtn").addEventListener("click", async () => {
   try {
-    const res = await fetch(API, {
+    // まず保存
+    await fetch(API, {
       method: "POST",
       body: JSON.stringify(localData)
     });
 
+    // 保存成功トースト
+    showToast("保存しました");
+
+    // 編集フラグを戻す
     edited = false;
     updateButtons();
 
-    showToast("保存しました");
+    // 🔥 保存後に最新データを再取得して再描画
+    const res2 = await fetch(API + "?t=" + Date.now());
+    const newData = await res2.json();
+
+    originalData = JSON.parse(JSON.stringify(newData));
+    localData = JSON.parse(JSON.stringify(newData));
+    filteredData = localData;
+
+    renderTable(localData);
+    enableEditing(localData, filterData);
+
   } catch (err) {
     showToast("保存エラー");
   }
 });
+
