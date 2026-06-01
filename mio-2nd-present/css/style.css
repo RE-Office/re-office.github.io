@@ -381,9 +381,10 @@ td.editing {
    追加画面オープン時の自動移動
 =========================== */
 .add-box.open ~ .countdown-box {
-  bottom: 330px !important;
+  bottom: 420px !important;
 }
 
 .add-box.open ~ #toggleAddBox {
-  bottom: 330px !important;
+  bottom: 420px !important;
 }
+
