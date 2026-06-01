@@ -259,4 +259,25 @@ table tr:nth-child(odd) td {
   backdrop-filter: blur(4px);
   text-shadow: 0 1px 2px rgba(255,255,255,0.6);
 }
+/* カウントダウンの数字アニメ */
+.countdown-box .num {
+  display: inline-block;
+  animation: pop 0.35s ease;
+}
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* Happy Birthday 用の特別スタイル */
+.countdown-box.happy {
+  background: rgba(255, 230, 240, 0.95);
+  color: #d4006e;
+  font-size: 18px;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(255, 150, 200, 0.8);
+}
+
 

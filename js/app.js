@@ -201,30 +201,42 @@ function hideLoading() {
 
 function updateCountdown() {
   const box = document.getElementById("countdownBox");
-
   const now = new Date();
 
   // 誕生日（今年）
   let target = new Date(now.getFullYear(), 5, 21, 0, 0, 0); 
   // 月は 0=1月 → 5=6月
 
-  // もし今年の誕生日が過ぎていたら来年にする
+  // 誕生日を過ぎていたら来年
   if (now > target) {
     target = new Date(now.getFullYear() + 1, 5, 21, 0, 0, 0);
   }
 
   const diff = target - now;
 
+  // 誕生日当日（0秒以下）
+  if (diff <= 0) {
+    box.classList.add("happy");
+    box.textContent = "🎉 Happy Birthday 美桜！🎂";
+    return;
+  }
+
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
   const mins = Math.floor((diff / (1000 * 60)) % 60);
   const secs = Math.floor((diff / 1000) % 60);
 
-  box.textContent =
-    `美桜の2歳の誕生日まで：${days}日 ${hours}時間 ${mins}分 ${secs}秒`;
+  // 数字に .num を付けてアニメさせる
+  box.classList.remove("happy");
+  box.innerHTML =
+    `美桜の2歳の誕生日まで：` +
+    `<span class="num">${days}</span>日 ` +
+    `<span class="num">${hours}</span>時間 ` +
+    `<span class="num">${mins}</span>分 ` +
+    `<span class="num">${secs}</span>秒`;
 }
 
 // 1秒ごとに更新
 setInterval(updateCountdown, 1000);
-updateCountdown(); // 初回即時実行
+updateCountdown();
 
