@@ -1,69 +1,25 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>商品データ管理</title>
-</head>
-
-<body>
-<h1>商品データ管理</h1>
-
-<form id="updateForm">
-  <textarea id="jsonInput" rows="20" cols="80"></textarea><br>
-  <button type="submit">更新する</button>
-</form>
-
-<pre id="status" style="white-space: pre-wrap; background:#eee; padding:10px;"></pre>
-
 <script>
-(async () => {
-  try {
-    const res = await fetch("data.json?cachebuster=" + Date.now());
-    const data = await res.json();
-    document.getElementById("jsonInput").value = JSON.stringify(data, null, 2);
-  } catch (err) {
-    document.getElementById("status").textContent =
-      "初期読み込みエラー:\n" + err;
-    console.error(err);
-  }
-})();
+const API = "https://script.google.com/macros/s/XXXXX/exec";
 
+// 初期読み込み
+fetch(API + "?t=" + Date.now())
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("jsonInput").value = JSON.stringify(data, null, 2);
+  });
+
+// 更新
 document.getElementById("updateForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const newJson = document.getElementById("jsonInput").value;
 
-  try {
-    const res = await fetch(
-      "https://api.github.com/repos/<USER>/<REPO>/dispatches",
-      {
-        method: "POST",
-        headers: {
-          "Accept": "application/vnd.github+json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          event_type: "update_data",
-          client_payload: { json: newJson }
-        })
-      }
-    );
+  const res = await fetch(API, {
+    method: "POST",
+    body: newJson
+  });
 
-    const text = await res.text();
-
-    document.getElementById("status").textContent =
-      `status: ${res.status}\n\nresponse:\n${text}`;
-
-    console.log("status:", res.status);
-    console.log("response:", text);
-
-  } catch (err) {
-    document.getElementById("status").textContent =
-      "fetch error:\n" + err;
-    console.error(err);
-  }
+  const text = await res.text();
+  document.getElementById("status").innerText = text;
 });
 </script>
-
-</body>
-</html>
