@@ -204,8 +204,7 @@ function updateCountdown() {
   const now = new Date();
 
   // 誕生日（今年）
-  let target = new Date(now.getFullYear(), 5, 21, 0, 0, 0); 
-  // 月は 0=1月 → 5=6月
+  let target = new Date(now.getFullYear(), 5, 21, 0, 0, 0);
 
   // 誕生日を過ぎていたら来年
   if (now > target) {
@@ -214,7 +213,7 @@ function updateCountdown() {
 
   const diff = target - now;
 
-  // 誕生日当日（0秒以下）
+  // 誕生日当日
   if (diff <= 0) {
     box.classList.add("happy");
     box.textContent = "🎉 Happy Birthday 美桜！🎂";
@@ -226,7 +225,6 @@ function updateCountdown() {
   const mins = Math.floor((diff / (1000 * 60)) % 60);
   const secs = Math.floor((diff / 1000) % 60);
 
-  // 数字に .num を付けてアニメさせる
   box.classList.remove("happy");
   box.innerHTML =
     `美桜の2歳の誕生日まで：` +
@@ -236,7 +234,5 @@ function updateCountdown() {
     `<span class="num">${secs}</span>秒`;
 }
 
-// 1秒ごとに更新
 setInterval(updateCountdown, 1000);
 updateCountdown();
-
