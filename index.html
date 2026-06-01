@@ -1,11 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>プレゼント候補一覧</title>
+
+<style>
+  table { width: 100%; border-collapse: collapse; }
+  table, th, td { border: 1px solid #333; }
+  th, td { padding: 8px; }
+  th { background: #f2f2f2; }
+</style>
+</head>
+
+<body>
+
+<h1>プレゼント候補一覧</h1>
+
+<table id="giftTable">
+  <thead>
+    <tr>
+      <th>種別</th>
+      <th>メーカー</th>
+      <th>商品名</th>
+      <th>価格帯</th>
+      <th>メモ</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
 <script>
-const API = "https://script.google.com/macros/s/AKfycbzkJHQo-2Qih294C1xR8ROpnO_ouRCn9Rv5gN2kIf5kz5JAESccp7JbsFiNLzagXXfG-w/exec";
+const API = "https://script.google.com/macros/s/XXXXX/exec";
 
 (async () => {
   try {
     const res = await fetch(API + "?t=" + Date.now(), { cache: "no-store" });
-
-    // レスポンスが JSON でない場合に備えてテキストも読む
     const text = await res.text();
 
     try {
@@ -37,3 +66,6 @@ const API = "https://script.google.com/macros/s/AKfycbzkJHQo-2Qih294C1xR8ROpnO_o
   }
 })();
 </script>
+
+</body>
+</html>
