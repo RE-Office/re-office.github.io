@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>🎄 プレゼント候補一覧 🎁</title>
+<title>🎄 プレゼント候補一覧（編集統合版） 🎁</title>
 
 <style>
   body {
@@ -68,6 +68,10 @@
     background: #fff3e0;
   }
 
+  td.editing {
+    background: #fff8d6;
+  }
+
   a {
     color: #00695c;
     font-weight: 600;
@@ -78,7 +82,48 @@
     color: #004d40;
   }
 
-  /* クリスマスの小さな装飾 */
+  .controls {
+    margin-top: 20px;
+    text-align: right;
+  }
+
+  .controls button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    margin-left: 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  #saveBtn { background: #2e7d32; color: white; }
+  #cancelBtn { background: #b71c1c; color: white; }
+
+  /* 追加フォーム */
+  .add-box {
+    margin-top: 30px;
+    padding: 20px;
+    background: #ffffffcc;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .add-box input {
+    margin: 4px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+
+  .add-box button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    background: #c62828;
+    color: white;
+    cursor: pointer;
+  }
+
   .snow {
     position: fixed;
     top: -10px;
@@ -103,9 +148,14 @@
 
 <div class="snow"></div>
 
-<h1>🎄 プレゼント候補一覧 🎁</h1>
+<h1>🎄 プレゼント候補一覧（編集統合版） 🎁</h1>
 
 検索：<input id="searchBox" placeholder="キーワード検索">
+
+<div class="controls">
+  <button id="saveBtn">確定（保存）</button>
+  <button id="cancelBtn">キャンセル</button>
+</div>
 
 <table id="giftTable">
   <thead>
@@ -114,16 +164,30 @@
       <th data-key="maker">メーカー</th>
       <th data-key="name">商品名</th>
       <th data-key="price">価格帯</th>
-      <th data-key="url">メモ</th>
+      <th data-key="url">URL</th>
+      <th>削除</th>
     </tr>
   </thead>
   <tbody></tbody>
 </table>
 
+<div class="add-box">
+  <h3>🎁 新規追加</h3>
+  種別: <input id="addType">
+  メーカー: <input id="addMaker">
+  商品名: <input id="addName">
+  価格: <input id="addPrice">
+  URL: <input id="addUrl" size="40">
+  <button id="addBtn">追加</button>
+</div>
+
+<pre id="status" style="white-space:pre-wrap;margin-top:20px;"></pre>
+
 <script>
 const API = "https://script.google.com/macros/s/AKfycbzkJHQo-2Qih294C1xR8ROpnO_ouRCn9Rv5gN2kIf5kz5JAESccp7JbsFiNLzagXXfG-w/exec";
 
 let originalData = [];
+let localData = [];
 let filteredData = [];
 let sortState = {};
 
@@ -131,15 +195,58 @@ function renderTable(data) {
   const tbody = document.querySelector("#giftTable tbody");
   tbody.innerHTML = "";
 
-  data.forEach(item => {
+  data.forEach((item, index) => {
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${item.type}</td>
-      <td>${item.maker}</td>
-      <td>${item.name}</td>
-      <td>${item.price}</td>
-      <td><a href="${item.url}" target="_blank">商品ページ</a></td>
-    `;
+
+    ["type", "maker", "name", "price", "url"].forEach(key => {
+      const td = document.createElement("td");
+      td.textContent = item[key];
+
+      td.addEventListener("click", () => {
+        if (td.querySelector("input")) return;
+
+        td.classList.add("editing");
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = item[key];
+        input.style.width = "95%";
+
+        td.innerHTML = "";
+        td.appendChild(input);
+        input.focus();
+
+        const finish = () => {
+          item[key] = input.value;
+          td.textContent = input.value;
+          td.classList.remove("editing");
+        };
+
+        input.addEventListener("blur", finish);
+        input.addEventListener("keydown", e => {
+          if (e.key === "Enter") input.blur();
+        });
+      });
+
+      tr.appendChild(td);
+    });
+
+    const delTd = document.createElement("td");
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "削除";
+    delBtn.style.background = "#b71c1c";
+    delBtn.style.color = "white";
+    delBtn.style.border = "none";
+    delBtn.style.padding = "6px 10px";
+    delBtn.style.borderRadius = "6px";
+
+    delBtn.addEventListener("click", () => {
+      localData.splice(index, 1);
+      filterData(document.getElementById("searchBox").value);
+    });
+
+    delTd.appendChild(delBtn);
+    tr.appendChild(delTd);
+
     tbody.appendChild(tr);
   });
 }
@@ -172,7 +279,7 @@ function sortData(key) {
 function filterData(keyword) {
   keyword = keyword.toLowerCase();
 
-  filteredData = originalData.filter(item =>
+  filteredData = localData.filter(item =>
     item.type.toLowerCase().includes(keyword) ||
     item.maker.toLowerCase().includes(keyword) ||
     item.name.toLowerCase().includes(keyword) ||
@@ -188,24 +295,57 @@ function filterData(keyword) {
 }
 
 (async () => {
-  const res = await fetch(API + "?t=" + Date.now(), { cache: "no-store" });
+  const res = await fetch(API + "?t=" + Date.now());
   const data = await res.json();
 
-  originalData = data;
-  filteredData = data;
+  originalData = JSON.parse(JSON.stringify(data));
+  localData = JSON.parse(JSON.stringify(data));
+  filteredData = localData;
 
-  renderTable(data);
+  renderTable(localData);
 })();
 
 document.getElementById("searchBox").addEventListener("input", e => {
   filterData(e.target.value);
 });
 
-document.querySelectorAll("#giftTable th").forEach(th => {
+document.querySelectorAll("#giftTable th[data-key]").forEach(th => {
   th.addEventListener("click", () => {
-    const key = th.dataset.key;
-    sortData(key);
+    sortData(th.dataset.key);
   });
+});
+
+document.getElementById("addBtn").addEventListener("click", () => {
+  const item = {
+    type: addType.value,
+    maker: addMaker.value,
+    name: addName.value,
+    price: addPrice.value,
+    url: addUrl.value
+  };
+
+  localData.push(item);
+  filterData(document.getElementById("searchBox").value);
+});
+
+document.getElementById("cancelBtn").addEventListener("click", () => {
+  localData = JSON.parse(JSON.stringify(originalData));
+  filterData("");
+  document.getElementById("searchBox").value = "";
+  status.textContent = "変更をキャンセルしました";
+});
+
+document.getElementById("saveBtn").addEventListener("click", async () => {
+  try {
+    const res = await fetch(API, {
+      method: "POST",
+      body: JSON.stringify(localData)
+    });
+    const text = await res.text();
+    status.textContent = text;
+  } catch (err) {
+    status.textContent = "Fetch error:\n" + err;
+  }
 });
 </script>
 
