@@ -34,7 +34,7 @@
   <h1>🎁 Present List</h1>
 
   <!-- 検索ボックス -->
-  <input type="text" id="searchBox" placeholder="検索ワードを入力v1">
+  <input type="text" id="searchBox" placeholder="検索ワードを入力">
 
   <!-- トースト通知 -->
   <div id="toast" class="toast"></div>
