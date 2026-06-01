@@ -199,3 +199,32 @@ function hideLoading() {
   document.getElementById("loadingOverlay").style.display = "none";
 }
 
+function updateCountdown() {
+  const box = document.getElementById("countdownBox");
+
+  const now = new Date();
+
+  // 誕生日（今年）
+  let target = new Date(now.getFullYear(), 5, 21, 0, 0, 0); 
+  // 月は 0=1月 → 5=6月
+
+  // もし今年の誕生日が過ぎていたら来年にする
+  if (now > target) {
+    target = new Date(now.getFullYear() + 1, 5, 21, 0, 0, 0);
+  }
+
+  const diff = target - now;
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const mins = Math.floor((diff / (1000 * 60)) % 60);
+  const secs = Math.floor((diff / 1000) % 60);
+
+  box.textContent =
+    `美桜の2歳の誕生日まで：${days}日 ${hours}時間 ${mins}分 ${secs}秒`;
+}
+
+// 1秒ごとに更新
+setInterval(updateCountdown, 1000);
+updateCountdown(); // 初回即時実行
+
