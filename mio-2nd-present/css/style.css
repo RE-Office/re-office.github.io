@@ -156,36 +156,61 @@ td.editing {
 }
 
 /* ===========================
-   追加フォーム
+   追加フォーム（スライドアップ対応）
 =========================== */
 .add-box {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: rgba(255,255,255,0.92);
-  padding: 15px;
+  background: rgba(255,255,255,0.95);
+  padding: 0 15px;
   box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
   backdrop-filter: blur(6px);
   border-top: 2px solid #c62828;
-  z-index: 100;
+  z-index: 150;
   color: #333;
+
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s ease;
 }
 
+/* 表示状態（クリアボタン見切れ防止） */
+.add-box.open {
+  padding: 15px;
+  max-height: 520px; /* ← 高さを増やした */
+}
+
+/* 入力欄を縦並びに */
 .add-box input {
-  margin: 4px;
-  padding: 6px 10px;
+  display: block;
+  width: 95%;
+  margin: 6px auto;
+  padding: 10px 12px;
   border-radius: 6px;
   border: 1px solid #ccc;
+  font-size: 16px;
 }
 
-.add-box button {
-  padding: 8px 14px;
+/* ボタン並び */
+.add-buttons {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.add-buttons button {
+  padding: 10px 16px;
   border-radius: 6px;
   border: none;
-  background: #c62828;
-  color: white;
+  font-size: 15px;
   cursor: pointer;
+  margin-left: 10px;
+}
+
+.clear-btn {
+  background: #555;
+  color: white;
 }
 
 /* ===========================
@@ -273,8 +298,8 @@ td.editing {
 .countdown-box {
   position: fixed;
   bottom: 130px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 20px;      /* ← 左寄せに変更 */
+  transform: none; /* ← 中央寄せ解除 */
   padding: 20px 28px;
   border-radius: 18px;
   font-size: 22px;
@@ -331,85 +356,32 @@ td.editing {
   text-shadow: 0 0 8px rgba(255,150,200,0.8);
 }
 
-/* 追加ボタン（常時表示） */
+/* ===========================
+   追加ボタン（大きく修正）
+=========================== */
 .toggle-add {
   position: fixed;
   bottom: 90px;
   right: 20px;
   background: #c62828;
   color: white;
-  padding: 12px 18px;
+  padding: 16px 24px; /* ← 大きくした */
   border-radius: 50px;
   border: none;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 20px;    /* ← 大きくした */
+  font-weight: 800;   /* ← 太くした */
   cursor: pointer;
   z-index: 200;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-/* add-box を隠した状態（高さ0） */
-.add-box {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(255,255,255,0.95);
-  padding: 0 15px;
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
-  backdrop-filter: blur(6px);
-  border-top: 2px solid #c62828;
-  z-index: 150;
-  color: #333;
-
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.45s ease;
-}
-
-/* 表示状態 */
-.add-box.open {
-  padding: 15px;
-  max-height: 400px; /* スライドアップ */
-}
-
-/* 入力欄を縦並びに */
-.add-box input {
-  display: block;
-  width: 95%;
-  margin: 6px auto;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-}
-
-/* ボタン並び */
-.add-buttons {
-  margin-top: 10px;
-  text-align: right;
-}
-
-.add-buttons button {
-  padding: 10px 16px;
-  border-radius: 6px;
-  border: none;
-  font-size: 15px;
-  cursor: pointer;
-  margin-left: 10px;
-}
-
-.clear-btn {
-  background: #555;
-  color: white;
-}
-
-/* 追加画面オープン時はカウントダウンを上に移動 */
+/* ===========================
+   追加画面オープン時の自動移動
+=========================== */
 .add-box.open ~ .countdown-box {
   bottom: 330px !important;
 }
 
-/* 追加画面オープン時は追加ボタンも上へ */
 .add-box.open ~ #toggleAddBox {
   bottom: 330px !important;
 }
