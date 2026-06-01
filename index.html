@@ -1,20 +1,39 @@
 <script>
 const API = "https://script.google.com/macros/s/AKfycbzkJHQo-2Qih294C1xR8ROpnO_ouRCn9Rv5gN2kIf5kz5JAESccp7JbsFiNLzagXXfG-w/exec";
 
-fetch(API + "?t=" + Date.now())
-  .then(res => res.json())
-  .then(data => {
-    const tbody = document.querySelector("#giftTable tbody");
-    data.forEach(item => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${item.type}</td>
-        <td>${item.maker}</td>
-        <td>${item.name}</td>
-        <td>${item.price}</td>
-        <td><a href="${item.url}" target="_blank">商品ページv1</a></td>
-      `;
-      tbody.appendChild(tr);
-    });
-  });
+(async () => {
+  try {
+    const res = await fetch(API + "?t=" + Date.now(), { cache: "no-store" });
+
+    // レスポンスが JSON でない場合に備えてテキストも読む
+    const text = await res.text();
+
+    try {
+      const data = JSON.parse(text);
+
+      const tbody = document.querySelector("#giftTable tbody");
+      data.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.type}</td>
+          <td>${item.maker}</td>
+          <td>${item.name}</td>
+          <td>${item.price}</td>
+          <td><a href="${item.url}" target="_blank">商品ページ</a></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+    } catch (jsonErr) {
+      document.body.innerHTML =
+        "<pre style='white-space:pre-wrap;background:#fee;padding:10px;'>JSON parse error:\n" +
+        jsonErr + "\n\nResponse text:\n" + text + "</pre>";
+    }
+
+  } catch (err) {
+    document.body.innerHTML =
+      "<pre style='white-space:pre-wrap;background:#fee;padding:10px;'>Fetch error:\n" +
+      err + "</pre>";
+  }
+})();
 </script>
