@@ -169,7 +169,7 @@ td.editing {
   box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
   backdrop-filter: blur(6px);
   border-top: 2px solid #c62828;
-  z-index: 10;   /* ← 下げる（重要） */
+  z-index: -1;   /* ← 普段は後ろ（重要） */
   color: #333;
 
   max-height: 0;
@@ -181,9 +181,8 @@ td.editing {
 .add-box.open {
   padding: 15px;
   max-height: 520px;
-  z-index: 9999;   /* ← 前に出す */
+  z-index: 9999;   /* ← 開いた時だけ前に出る */
 }
-
 
 /* 入力欄を縦並びに */
 .add-box input {
@@ -301,7 +300,7 @@ td.editing {
 .countdown-box {
   position: fixed;
   bottom: 130px;
-  left: 20px;      /* ← 左寄せに変更 */
+  left: 20px;      /* ← 左寄せ */
   transform: none; /* ← 中央寄せ解除 */
   padding: 20px 28px;
   border-radius: 18px;
@@ -368,11 +367,11 @@ td.editing {
   right: 20px;
   background: #c62828;
   color: white;
-  padding: 16px 24px; /* ← 大きくした */
+  padding: 16px 24px;
   border-radius: 50px;
   border: none;
-  font-size: 20px;    /* ← 大きくした */
-  font-weight: 800;   /* ← 太くした */
+  font-size: 20px;
+  font-weight: 800;
   cursor: pointer;
   z-index: 200;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
