@@ -171,6 +171,28 @@
     50% { margin-left: 20px; }
     100% { margin-left: 0; }
   }
+
+  /* トースト通知 */
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.9);
+    color: #333;
+    padding: 12px 18px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    font-size: 15px;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 9999;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
 </style>
 </head>
 
@@ -209,6 +231,8 @@
   <button id="addBtn">追加</button>
 </div>
 
+<div id="toast" class="toast"></div>
+
 <pre id="status" style="white-space:pre-wrap;margin-top:20px;"></pre>
 
 <script>
@@ -222,6 +246,16 @@ let edited = false;
 
 function updateButtons() {
   document.querySelector(".controls").style.display = edited ? "block" : "none";
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2000);
 }
 
 function renderTable(data) {
@@ -365,6 +399,8 @@ document.getElementById("addBtn").addEventListener("click", () => {
   edited = true;
   updateButtons();
   filterData(document.getElementById("searchBox").value);
+
+  showToast("追加しました");
 });
 
 document.getElementById("cancelBtn").addEventListener("click", () => {
@@ -374,6 +410,8 @@ document.getElementById("cancelBtn").addEventListener("click", () => {
   filterData("");
   searchBox.value = "";
   status.textContent = "変更をキャンセルしました";
+
+  showToast("キャンセルしました");
 });
 
 document.getElementById("saveBtn").addEventListener("click", async () => {
@@ -387,6 +425,8 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
 
     edited = false;
     updateButtons();
+
+    showToast("保存しました");
   } catch (err) {
     status.textContent = "Fetch error:\n" + err;
   }
