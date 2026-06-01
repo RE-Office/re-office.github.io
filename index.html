@@ -5,10 +5,11 @@
 <title>プレゼント候補一覧</title>
 
 <style>
-  table { width: 100%; border-collapse: collapse; }
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
   table, th, td { border: 1px solid #333; }
   th, td { padding: 8px; }
-  th { background: #f2f2f2; }
+  th { background: #f2f2f2; cursor: pointer; }
+  #searchBox { width: 200px; padding: 6px; margin-top: 10px; }
 </style>
 </head>
 
@@ -16,14 +17,16 @@
 
 <h1>プレゼント候補一覧</h1>
 
+検索：<input id="searchBox" placeholder="キーワード検索">
+
 <table id="giftTable">
   <thead>
     <tr>
-      <th>種別</th>
-      <th>メーカー</th>
-      <th>商品名</th>
-      <th>価格帯</th>
-      <th>メモ</th>
+      <th data-key="type">種別</th>
+      <th data-key="maker">メーカー</th>
+      <th data-key="name">商品名</th>
+      <th data-key="price">価格帯</th>
+      <th data-key="url">メモ</th>
     </tr>
   </thead>
   <tbody></tbody>
@@ -32,39 +35,99 @@
 <script>
 const API = "https://script.google.com/macros/s/AKfycbzkJHQo-2Qih294C1xR8ROpnO_ouRCn9Rv5gN2kIf5kz5JAESccp7JbsFiNLzagXXfG-w/exec";
 
-(async () => {
-  try {
-    const res = await fetch(API + "?t=" + Date.now(), { cache: "no-store" });
-    const text = await res.text();
+let originalData = [];
+let filteredData = [];
+let sortState = {}; // { key: "type", order: "asc" }
 
-    try {
-      const data = JSON.parse(text);
+// 表描画
+function renderTable(data) {
+  const tbody = document.querySelector("#giftTable tbody");
+  tbody.innerHTML = "";
 
-      const tbody = document.querySelector("#giftTable tbody");
-      data.forEach(item => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${item.type}</td>
-          <td>${item.maker}</td>
-          <td>${item.name}</td>
-          <td>${item.price}</td>
-          <td><a href="${item.url}" target="_blank">商品ページ</a></td>
-        `;
-        tbody.appendChild(tr);
-      });
+  data.forEach(item => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${item.type}</td>
+      <td>${item.maker}</td>
+      <td>${item.name}</td>
+      <td>${item.price}</td>
+      <td><a href="${item.url}" target="_blank">商品ページ</a></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
 
-    } catch (jsonErr) {
-      document.body.innerHTML =
-        "<pre style='white-space:pre-wrap;background:#fee;padding:10px;'>JSON parse error:\n" +
-        jsonErr + "\n\nResponse text:\n" + text + "</pre>";
+// ソート処理
+function sortData(key) {
+  // 昇順/降順の切り替え
+  if (sortState.key === key) {
+    sortState.order = sortState.order === "asc" ? "desc" : "asc";
+  } else {
+    sortState.key = key;
+    sortState.order = "asc";
+  }
+
+  filteredData.sort((a, b) => {
+    let x = a[key];
+    let y = b[key];
+
+    // 数値ソート（価格）
+    if (key === "price") {
+      x = parseInt(x.replace(/[^0-9]/g, "")) || 0;
+      y = parseInt(y.replace(/[^0-9]/g, "")) || 0;
     }
 
-  } catch (err) {
-    document.body.innerHTML =
-      "<pre style='white-space:pre-wrap;background:#fee;padding:10px;'>Fetch error:\n" +
-      err + "</pre>";
+    if (x < y) return sortState.order === "asc" ? -1 : 1;
+    if (x > y) return sortState.order === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  renderTable(filteredData);
+}
+
+// 検索処理
+function filterData(keyword) {
+  keyword = keyword.toLowerCase();
+
+  filteredData = originalData.filter(item =>
+    item.type.toLowerCase().includes(keyword) ||
+    item.maker.toLowerCase().includes(keyword) ||
+    item.name.toLowerCase().includes(keyword) ||
+    item.price.toLowerCase().includes(keyword) ||
+    item.url.toLowerCase().includes(keyword)
+  );
+
+  // ソート状態があれば適用
+  if (sortState.key) {
+    sortData(sortState.key);
+  } else {
+    renderTable(filteredData);
   }
+}
+
+// 初期読み込み
+(async () => {
+  const res = await fetch(API + "?t=" + Date.now(), { cache: "no-store" });
+  const data = await res.json();
+
+  originalData = data;
+  filteredData = data;
+
+  renderTable(data);
 })();
+
+// 検索イベント
+document.getElementById("searchBox").addEventListener("input", e => {
+  filterData(e.target.value);
+});
+
+// ソートイベント
+document.querySelectorAll("#giftTable th").forEach(th => {
+  th.addEventListener("click", () => {
+    const key = th.dataset.key;
+    sortData(key);
+  });
+});
 </script>
 
 </body>
