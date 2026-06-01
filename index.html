@@ -1,21 +1,21 @@
-<style>
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  table, th, td {
-    border: 1px solid #333;
-  }
-  th, td {
-    padding: 8px;
-    text-align: left;
-  }
-  th {
-    background-color: #f2f2f2;
-  }
-</style>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>プレゼント候補一覧</title>
 
-<table>
+<style>
+  table { width: 100%; border-collapse: collapse; }
+  table, th, td { border: 1px solid #333; }
+  th, td { padding: 8px; }
+  th { background: #f2f2f2; }
+</style>
+</head>
+
+<body>
+<h1>プレゼント候補一覧</h1>
+
+<table id="giftTable">
   <thead>
     <tr>
       <th>種別</th>
@@ -25,55 +25,27 @@
       <th>メモ</th>
     </tr>
   </thead>
-  <tbody>
-    <tr>
-      <td>人形</td>
-      <td>メルちゃん</td>
-      <td>入門セット</td>
-      <td>7,920円</td>
-      <td><a href="https://www.mellchan.com/product/doll/mellchannyuumonset.php" target="_blank">商品ページ</a></td>
-    </tr>
-    <tr>
-      <td>ブロック</td>
-      <td>GAKKEN</td>
-      <td>ニューブロック ミルきらプリンセス</td>
-      <td>6,050円</td>
-      <td><a href="https://newblock.jp/product/83730/" target="_blank">商品ページ</a></td>
-    </tr>
-    <tr>
-      <td>ブロック</td>
-      <td>GAKKEN</td>
-      <td>ニューブロック はじめようセット</td>
-      <td>5,500円</td>
-      <td><a href="https://newblock.jp/product/83717/" target="_blank">商品ページ</a></td>
-    </tr>
-    <tr>
-      <td>ブロック</td>
-      <td>KitWell</td>
-      <td>マグビルド スロープセット 72ピース</td>
-      <td>8,499円</td>
-      <td><a href="https://amzn.asia/d/07XlvpCM" target="_blank">商品ページ</a></td>
-    </tr>
-    <tr>
-      <td>ブロック</td>
-      <td>LEGO</td>
-      <td>デュプロのコンテナ デラックス</td>
-      <td>4,980円</td>
-      <td><a href="https://www.lego.com/ja-jp/product/brick-box-10913?consent-modal=show" target="_blank">商品ページ</a></td>
-    </tr>
-    <tr>
-      <td>ブロック</td>
-      <td>LEGO</td>
-      <td>ミッキーやミニー、プルートとあそぼう♪ミッキーマウス クラブハウス</td>
-      <td>8,280円</td>
-      <td><a href="https://www.lego.com/ja-jp/product/mickey-mouse-clubhouse-with-minnie-pluto-10465" target="_blank">商品ページ</a></td>
-    </tr>
-    <tr>
-      <td>おままごとセット</td>
-      <td>RizKiz</td>
-      <td>未定</td>
-      <td>未定</td>
-      <td><a href="https://rizkiz.jp/" target="_blank">公式サイト</a></td>
-    </tr>
-  </tbody>
+  <tbody></tbody>
 </table>
+
+<script>
+fetch("data.json")
+  .then(res => res.json())
+  .then(data => {
+    const tbody = document.querySelector("#giftTable tbody");
+    data.forEach(item => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item.type}</td>
+        <td>${item.maker}</td>
+        <td>${item.name}</td>
+        <td>${item.price}</td>
+        <td><a href="${item.url}" target="_blank">商品ページ</a></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  });
+</script>
+
+</body>
+</html>
