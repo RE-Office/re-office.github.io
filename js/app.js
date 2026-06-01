@@ -106,6 +106,8 @@ function filterData(keyword) {
 }
 
 (async () => {
+  showLoading();   // ← ここに追加
+
   const res = await fetch(API + "?t=" + Date.now());
   const data = await res.json();
 
@@ -115,7 +117,10 @@ function filterData(keyword) {
 
   renderTable(localData);
   enableEditing(localData, filterData);
+
+  hideLoading();   // ← ここに追加
 })();
+
 
 document.getElementById("searchBox").addEventListener("input", e => {
   filterData(e.target.value);
@@ -156,20 +161,18 @@ document.getElementById("cancelBtn").addEventListener("click", () => {
 
 document.getElementById("saveBtn").addEventListener("click", async () => {
   try {
-    // まず保存
+    showLoading();   // ← ここに追加
+
     await fetch(API, {
       method: "POST",
       body: JSON.stringify(localData)
     });
 
-    // 保存成功トースト
     showToast("保存しました");
-
-    // 編集フラグを戻す
     edited = false;
     updateButtons();
 
-    // 🔥 保存後に最新データを再取得して再描画
+    // 🔥 再読み込み
     const res2 = await fetch(API + "?t=" + Date.now());
     const newData = await res2.json();
 
@@ -182,6 +185,17 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
 
   } catch (err) {
     showToast("保存エラー");
+  } finally {
+    hideLoading();   // ← ここに追加
   }
 });
+
+
+function showLoading() {
+  document.getElementById("loadingOverlay").style.display = "flex";
+}
+
+function hideLoading() {
+  document.getElementById("loadingOverlay").style.display = "none";
+}
 
