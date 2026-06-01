@@ -240,3 +240,27 @@ function updateCountdown() {
 setInterval(updateCountdown, 1000);
 updateCountdown();
 
+// 追加フォーム開閉
+const toggleBtn = document.getElementById("toggleAddBox");
+const addBox = document.querySelector(".add-box");
+
+toggleBtn.addEventListener("click", () => {
+  addBox.classList.toggle("open");
+});
+
+// 入力欄クリア関数
+function clearAddFields() {
+  document.getElementById("addType").value = "";
+  document.getElementById("addMaker").value = "";
+  document.getElementById("addName").value = "";
+  document.getElementById("addPrice").value = "";
+  document.getElementById("addUrl").value = "";
+}
+
+// クリアボタン
+document.getElementById("clearBtn").addEventListener("click", clearAddFields);
+
+// 追加ボタン押したらクリア
+document.getElementById("addBtn").addEventListener("click", () => {
+  clearAddFields();
+});

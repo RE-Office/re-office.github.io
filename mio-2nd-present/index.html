@@ -1,61 +1,82 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>🎄 プレゼント候補 🎁</title>
-
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>Present List</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-<h1>🎄 プレゼント候補🎁</h1>
+  <h1>🎁 Present List</h1>
 
-検索：<input id="searchBox" placeholder="キーワード検索">
+  <!-- 検索ボックス -->
+  <input type="text" id="searchBox" placeholder="検索ワードを入力">
 
-<div class="controls">
-  <button id="saveBtn">確定（保存）</button>
-  <button id="cancelBtn">キャンセル</button>
-</div>
+  <!-- トースト通知 -->
+  <div id="toast" class="toast"></div>
 
-<table id="giftTable">
-  <thead>
-    <tr>
-      <th data-key="type">種別</th>
-      <th data-key="maker">メーカー</th>
-      <th data-key="name">商品名</th>
-      <th data-key="price">価格帯</th>
-      <th data-key="url">URL</th>
-      <th>編集</th>
-      <th>削除</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+  <!-- カウントダウン -->
+  <div id="countdownBox" class="countdown-box"></div>
 
-<div id="countdownBox" class="countdown-box"></div>
+  <!-- 表 -->
+  <table id="giftTable">
+    <thead>
+      <tr>
+        <th data-col="type">種別</th>
+        <th data-col="maker">メーカー</th>
+        <th data-col="name">商品名</th>
+        <th data-col="price">価格</th>
+        <th data-col="url">URL</th>
+        <th>編集</th>
+      </tr>
+    </thead>
+    <tbody id="giftBody">
+      <!-- JSで挿入 -->
+    </tbody>
+  </table>
 
-<div class="add-box">
-  <h3 style="margin:0 0 10px 0;">🎁 追加</h3>
-  種別: <input id="addType">
-  メーカー: <input id="addMaker">
-  商品名: <input id="addName">
-  価格: <input id="addPrice">
-  URL: <input id="addUrl" size="40">
-  <button id="addBtn">追加</button>
-</div>
+  <!-- 編集コントロール -->
+  <div class="controls" id="controls">
+    <button id="saveBtn">保存</button>
+    <button id="cancelBtn">キャンセル</button>
+  </div>
 
-<div id="toast" class="toast"></div>
+  <!-- ＋追加ボタン（常時表示） -->
+  <button id="toggleAddBox" class="toggle-add">＋ 追加</button>
 
-<!-- 🔥 ローディングオーバーレイは script より前に置く -->
-<div id="loadingOverlay" class="loading-overlay">
-  <div class="loader">読み込み中…</div>
-</div>
+  <!-- 追加フォーム（スライドアップ） -->
+  <div class="add-box">
+    <h3 style="margin:0 0 10px 0;">🎁 追加</h3>
 
-<script src="js/toast.js"></script>
-<script src="js/snow.js"></script>
-<script src="js/edit.js"></script>
-<script src="js/app.js"></script>
+    <input id="addType" placeholder="種別">
+    <input id="addMaker" placeholder="メーカー">
+    <input id="addName" placeholder="商品名">
+    <input id="addPrice" placeholder="価格">
+    <input id="addUrl" placeholder="URL">
+
+    <div class="add-buttons">
+      <button id="addBtn">追加</button>
+      <button id="clearBtn" class="clear-btn">クリア</button>
+    </div>
+  </div>
+
+  <!-- ローディング -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loader">Loading...</div>
+  </div>
+
+  <!-- 雪 -->
+  <script src="js/snow.js"></script>
+
+  <!-- 編集処理 -->
+  <script src="js/edit.js"></script>
+
+  <!-- トースト通知 -->
+  <script src="js/toast.js"></script>
+
+  <!-- メイン処理 -->
+  <script src="js/app.js"></script>
 
 </body>
 </html>
