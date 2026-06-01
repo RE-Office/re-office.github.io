@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>商品データ管理</title>
+</head>
+
+<body>
+<h1>商品データ管理</h1>
+
+<form id="updateForm">
+  <textarea id="jsonInput" rows="20" cols="80"></textarea><br>
+  <button type="submit">更新する</button>
+</form>
+
+<p id="status"></p>
+
+<script>
+fetch("data.json")
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("jsonInput").value = JSON.stringify(data, null, 2);
+  });
+
+document.getElementById("updateForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const newJson = document.getElementById("jsonInput").value;
+
+  const res = await fetch(
+    "https://api.github.com/repos/<USER>/<REPO>/dispatches",
+    {
+      method: "POST",
+      headers: {
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer <YOUR_GITHUB_TOKEN>"
+      },
+      body: JSON.stringify({
+        event_type: "update_data",
+        client_payload: { json: newJson }
+      })
+    }
+  );
+
+  document.getElementById("status").innerText =
+    res.ok ? "更新リクエストを送信しました" : "エラーが発生しました";
+});
+</script>
+
+</body>
+</html>
