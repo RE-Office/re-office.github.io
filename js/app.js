@@ -12,11 +12,22 @@ function renderTable(data) {
   data.forEach((item, index) => {
     const tr = document.createElement("tr");
 
-    ["type","maker","name","price","url"].forEach(key => {
-      const td = document.createElement("td");
+  ["type","maker","name","price","url"].forEach(key => {
+    const td = document.createElement("td");
+
+    if (key === "url") {
+      // 通常表示は「商品ページへ」
+      const a = document.createElement("a");
+      a.href = item[key];
+      a.target = "_blank";
+      a.textContent = "商品ページへ";
+      td.appendChild(a);
+    } else {
       td.textContent = item[key];
-      tr.appendChild(td);
-    });
+    }
+    tr.appendChild(td);
+  });
+
 
     // 編集ボタン
     const editTd = document.createElement("td");
