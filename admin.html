@@ -8,6 +8,7 @@
   th, td { border: 1px solid #ccc; padding: 6px; }
   th { background: #f2f2f2; }
   button { margin: 4px; }
+  td.editing { background: #ffffcc; }
 </style>
 </head>
 
@@ -52,8 +53,8 @@
 <script>
 const API = "https://script.google.com/macros/s/AKfycbzkJHQo-2Qih294C1xR8ROpnO_ouRCn9Rv5gN2kIf5kz5JAESccp7JbsFiNLzagXXfG-w/exec"; 
 
-let localData = [];   // ローカル編集用データ
-let originalData = []; // キャンセル用バックアップ
+let localData = [];     // ローカル編集用データ
+let originalData = [];  // キャンセル用バックアップ
 
 // 表を描画
 function renderTable() {
@@ -62,24 +63,55 @@ function renderTable() {
 
   localData.forEach((item, index) => {
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${item.type}</td>
-      <td>${item.maker}</td>
-      <td>${item.name}</td>
-      <td>${item.price}</td>
-      <td><a href="${item.url}" target="_blank">${item.url}</a></td>
-      <td><button data-index="${index}" class="delBtn">削除</button></td>
-    `;
-    tbody.appendChild(tr);
-  });
 
-  // 削除ボタンにイベント付与
-  document.querySelectorAll(".delBtn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const idx = btn.dataset.index;
-      localData.splice(idx, 1);
+    // 各セルを editable にする
+    ["type", "maker", "name", "price", "url"].forEach(key => {
+      const td = document.createElement("td");
+      td.textContent = item[key];
+
+      td.addEventListener("click", () => {
+        // すでに編集中なら何もしない
+        if (td.querySelector("input")) return;
+
+        td.classList.add("editing");
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = item[key];
+        input.style.width = "95%";
+
+        td.innerHTML = "";
+        td.appendChild(input);
+        input.focus();
+
+        // 編集確定（Enter or フォーカス外れ）
+        const finish = () => {
+          item[key] = input.value;
+          td.textContent = input.value;
+          td.classList.remove("editing");
+        };
+
+        input.addEventListener("blur", finish);
+        input.addEventListener("keydown", e => {
+          if (e.key === "Enter") input.blur();
+        });
+      });
+
+      tr.appendChild(td);
+    });
+
+    // 削除ボタン
+    const delTd = document.createElement("td");
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "削除";
+    delBtn.addEventListener("click", () => {
+      localData.splice(index, 1);
       renderTable();
     });
+    delTd.appendChild(delBtn);
+    tr.appendChild(delTd);
+
+    tbody.appendChild(tr);
   });
 }
 
