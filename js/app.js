@@ -18,6 +18,15 @@ function renderTable(data) {
       tr.appendChild(td);
     });
 
+    // 編集ボタン
+    const editTd = document.createElement("td");
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "編集";
+    editBtn.className = "edit-btn";
+    editTd.appendChild(editBtn);
+    tr.appendChild(editTd);
+
+    // 削除ボタン
     const delTd = document.createElement("td");
     const delBtn = document.createElement("button");
     delBtn.textContent = "削除";
@@ -140,7 +149,6 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
       method: "POST",
       body: JSON.stringify(localData)
     });
-    const text = await res.text();
 
     edited = false;
     updateButtons();

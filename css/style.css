@@ -1,5 +1,5 @@
 body {
-  font-family: "Segoe UI", "Hiragino Sans", sans-serif;
+  font-family: "Nunito", "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", sans-serif;
   background: url("https://raw.githubusercontent.com/RE-Office/re-office.github.io/main/images/mios_birth_2.jpg")
               no-repeat center center fixed;
   background-size: cover;
@@ -95,6 +95,24 @@ td.editing {
 #saveBtn { background: #2e7d32; color: white; }
 #cancelBtn { background: #b71c1c; color: white; }
 
+.edit-btn {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.save-row-btn {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
 .add-box {
   position: fixed;
   bottom: 0;
@@ -125,7 +143,7 @@ td.editing {
   cursor: pointer;
 }
 
-/* 雪の基本スタイル */
+/* 雪 */
 .snowflake {
   position: fixed;
   top: -10px;
