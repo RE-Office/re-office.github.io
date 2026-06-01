@@ -1,3 +1,6 @@
+/* ===========================
+   基本レイアウト
+=========================== */
 body {
   font-family: "Nunito", "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", sans-serif;
   background: url("https://raw.githubusercontent.com/RE-Office/re-office.github.io/main/images/mios_birth_2.jpg")
@@ -21,6 +24,9 @@ body::before {
   z-index: -1;
 }
 
+/* ===========================
+   タイトル
+=========================== */
 h1 {
   text-align: center;
   margin-bottom: 25px;
@@ -30,6 +36,9 @@ h1 {
   text-shadow: 0 0 12px rgba(255, 200, 200, 0.9);
 }
 
+/* ===========================
+   検索ボックス
+=========================== */
 #searchBox {
   width: 260px;
   padding: 10px 14px;
@@ -41,16 +50,21 @@ h1 {
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
+/* ===========================
+   表（透けるように修正）
+=========================== */
 table {
   width: 100%;
-  border-collapse: collapse;
-  background: rgba(255,255,255,0.9);
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent !important; /* ← 透けるように修正 */
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0,0,0,0.3);
   color: #333;
 }
 
+/* ヘッダー */
 th {
   background: linear-gradient(90deg, #b30000, #7a0000);
   color: #fff;
@@ -60,23 +74,37 @@ th {
   border-bottom: 2px solid #900;
 }
 
+/* セル共通 */
 td {
   padding: 14px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 
-tr:nth-child(even) {
-  background: #fff7f7;
+/* ★ 透ける背景（最強版） */
+#giftTable tbody td {
+  background: rgba(255,255,255,0.65) !important;
+  backdrop-filter: blur(3px);
+  transition: background 0.2s;
 }
 
-tr:hover {
-  background: #ffecec;
+/* 奇数行はさらに淡く */
+#giftTable tbody tr:nth-child(odd) td {
+  background: rgba(255,255,255,0.45) !important;
 }
 
+/* ホバー時にふわっと濃く */
+#giftTable tbody tr:hover td {
+  background: rgba(255,255,255,0.85) !important;
+}
+
+/* 編集中セル */
 td.editing {
-  background: #fff0d6;
+  background: #fff0d6 !important;
 }
 
+/* ===========================
+   コントロールボタン
+=========================== */
 .controls {
   margin-top: 20px;
   text-align: right;
@@ -95,6 +123,7 @@ td.editing {
 #saveBtn { background: #2e7d32; color: white; }
 #cancelBtn { background: #b71c1c; color: white; }
 
+/* 編集ボタン */
 .edit-btn {
   background: #ff9800;
   color: white;
@@ -104,6 +133,7 @@ td.editing {
   cursor: pointer;
 }
 
+/* 保存ボタン */
 .save-row-btn {
   background: #4caf50;
   color: white;
@@ -113,6 +143,9 @@ td.editing {
   cursor: pointer;
 }
 
+/* ===========================
+   追加フォーム
+=========================== */
 .add-box {
   position: fixed;
   bottom: 0;
@@ -143,7 +176,9 @@ td.editing {
   cursor: pointer;
 }
 
-/* 雪 */
+/* ===========================
+   雪アニメ
+=========================== */
 .snowflake {
   position: fixed;
   top: -10px;
@@ -165,7 +200,9 @@ td.editing {
   100% { margin-left: 0; }
 }
 
-/* トースト通知 */
+/* ===========================
+   トースト通知
+=========================== */
 .toast {
   position: fixed;
   top: 20px;
@@ -187,35 +224,9 @@ td.editing {
   transform: translateY(0);
 }
 
-/* 表の文字をかわいく */
-table td, table th {
-  font-family: "M PLUS Rounded 1c", "Nunito", "Hiragino Maru Gothic ProN", sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
-}
-
-/* 通常セルの色を柔らかく */
-table td {
-  color: #444;
-}
-
-/* 行の高さをゆったり */
-table td, table th {
-  padding: 16px 14px;
-}
-
-/* 行の背景をふわっと */
-table tr:nth-child(even) td {
-  background: rgba(255,255,255,0.65);
-}
-
-table tr:nth-child(odd) td {
-  background: rgba(255,255,255,0.92);
-}
-
-/* ロード画面オーバーレイ */
+/* ===========================
+   ローディング
+=========================== */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -244,7 +255,9 @@ table tr:nth-child(odd) td {
   100% { opacity: 0.4; }
 }
 
-/* カウントダウンボックス（大きめに） */
+/* ===========================
+   カウントダウン（虹色）
+=========================== */
 .countdown-box {
   position: fixed;
   bottom: 130px;
@@ -260,7 +273,6 @@ table tr:nth-child(odd) td {
   backdrop-filter: blur(6px);
   box-shadow: 0 4px 14px rgba(0,0,0,0.25);
 
-  /* ★ 虹色グラデーション背景 */
   background: linear-gradient(
     90deg,
     rgba(255, 120, 120, 0.85),
@@ -275,15 +287,13 @@ table tr:nth-child(odd) td {
   animation: rainbowMove 12s ease infinite;
 }
 
-/* 虹色がゆっくり流れるアニメ */
 @keyframes rainbowMove {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-
-/* 数字のぴょこアニメ */
+/* 数字アニメ */
 .countdown-box .num {
   display: inline-block;
   animation: pop 0.35s ease;
@@ -295,23 +305,12 @@ table tr:nth-child(odd) td {
   100% { transform: scale(1); }
 }
 
-/* 特定ワードの色指定 */
-.countdown-box .name {
-  color: #ff4fa3; /* ピンク */
-  font-weight: 700;
-}
+/* 色付きワード */
+.countdown-box .name { color: #ff4fa3; font-weight: 700; }
+.countdown-box .age { color: #000; font-weight: 700; }
+.countdown-box .birthday { color: #ff2b2b; font-weight: 700; }
 
-.countdown-box .age {
-  color: #000; /* 黒 */
-  font-weight: 700;
-}
-
-.countdown-box .birthday {
-  color: #ff2b2b; /* 赤 */
-  font-weight: 700;
-}
-
-/* Happy Birthday の特別スタイル */
+/* 誕生日当日 */
 .countdown-box.happy {
   background: rgba(255, 230, 240, 0.95);
   color: #d4006e;
@@ -319,6 +318,3 @@ table tr:nth-child(odd) td {
   font-weight: 700;
   text-shadow: 0 0 8px rgba(255,150,200,0.8);
 }
-
-
-
