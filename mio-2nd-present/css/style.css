@@ -195,21 +195,25 @@ td.editing {
   font-size: 16px;
 }
 
-/* ボタン並び */
+/* ボタン並び（左寄せ＋余白） */
 .add-buttons {
   margin-top: 10px;
-  text-align: right;
+  text-align: left;   /* ← 左寄せに変更 */
+  padding-left: 10px; /* ← 左に余白を追加 */
 }
 
+/* ボタン（固定長で少し長め） */
 .add-buttons button {
-  padding: 10px 16px;
+  width: 120px;       /* ← 固定長（長め） */
+  padding: 10px 0;    /* ← 横幅固定なので左右は0でOK */
   border-radius: 6px;
   border: none;
   font-size: 15px;
   cursor: pointer;
-  margin-left: 10px;
+  margin-right: 12px; /* ← ボタン間の余白 */
 }
 
+/* クリアボタン */
 .clear-btn {
   background: #555;
   color: white;
