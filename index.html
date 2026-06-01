@@ -10,6 +10,7 @@
     background: linear-gradient(135deg, #ffefef, #fff8e6);
     padding: 30px;
     color: #333;
+    padding-bottom: 180px; /* フローティング追加フォームの分だけ余白 */
   }
 
   h1 {
@@ -82,9 +83,11 @@
     color: #004d40;
   }
 
+  /* 編集ボタン群（初期は非表示） */
   .controls {
     margin-top: 20px;
     text-align: right;
+    display: none;
   }
 
   .controls button {
@@ -99,13 +102,18 @@
   #saveBtn { background: #2e7d32; color: white; }
   #cancelBtn { background: #b71c1c; color: white; }
 
-  /* 追加フォーム */
+  /* フローティング追加フォーム */
   .add-box {
-    margin-top: 30px;
-    padding: 20px;
-    background: #ffffffcc;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #ffffffee;
+    padding: 15px;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+    backdrop-filter: blur(6px);
+    border-top: 2px solid #c62828;
+    z-index: 100;
   }
 
   .add-box input {
@@ -124,6 +132,7 @@
     cursor: pointer;
   }
 
+  /* 雪アニメーション */
   .snow {
     position: fixed;
     top: -10px;
@@ -172,7 +181,7 @@
 </table>
 
 <div class="add-box">
-  <h3>🎁 新規追加</h3>
+  <h3 style="margin:0 0 10px 0;">🎁 新規追加</h3>
   種別: <input id="addType">
   メーカー: <input id="addMaker">
   商品名: <input id="addName">
@@ -190,6 +199,11 @@ let originalData = [];
 let localData = [];
 let filteredData = [];
 let sortState = {};
+let edited = false;
+
+function updateButtons() {
+  document.querySelector(".controls").style.display = edited ? "block" : "none";
+}
 
 function renderTable(data) {
   const tbody = document.querySelector("#giftTable tbody");
@@ -219,6 +233,8 @@ function renderTable(data) {
           item[key] = input.value;
           td.textContent = input.value;
           td.classList.remove("editing");
+          edited = true;
+          updateButtons();
         };
 
         input.addEventListener("blur", finish);
@@ -241,6 +257,8 @@ function renderTable(data) {
 
     delBtn.addEventListener("click", () => {
       localData.splice(index, 1);
+      edited = true;
+      updateButtons();
       filterData(document.getElementById("searchBox").value);
     });
 
@@ -325,13 +343,17 @@ document.getElementById("addBtn").addEventListener("click", () => {
   };
 
   localData.push(item);
+  edited = true;
+  updateButtons();
   filterData(document.getElementById("searchBox").value);
 });
 
 document.getElementById("cancelBtn").addEventListener("click", () => {
   localData = JSON.parse(JSON.stringify(originalData));
+  edited = false;
+  updateButtons();
   filterData("");
-  document.getElementById("searchBox").value = "";
+  searchBox.value = "";
   status.textContent = "変更をキャンセルしました";
 });
 
@@ -343,6 +365,9 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
     });
     const text = await res.text();
     status.textContent = text;
+
+    edited = false;
+    updateButtons();
   } catch (err) {
     status.textContent = "Fetch error:\n" + err;
   }
