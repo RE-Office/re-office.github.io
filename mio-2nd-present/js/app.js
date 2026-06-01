@@ -244,9 +244,18 @@ updateCountdown();
 const toggleBtn = document.getElementById("toggleAddBox");
 const addBox = document.querySelector(".add-box");
 
+// 追加フォーム開閉
 toggleBtn.addEventListener("click", () => {
   addBox.classList.toggle("open");
+
+  // ボタンの表示切り替え
+  if (addBox.classList.contains("open")) {
+    toggleBtn.textContent = "✕ 閉じる";
+  } else {
+    toggleBtn.textContent = "＋ 追加";
+  }
 });
+
 
 // 入力欄クリア関数
 function clearAddFields() {
@@ -263,4 +272,11 @@ document.getElementById("clearBtn").addEventListener("click", clearAddFields);
 // 追加ボタン押したらクリア
 document.getElementById("addBtn").addEventListener("click", () => {
   clearAddFields();
+
+  // 自動で閉じる
+  addBox.classList.remove("open");
+  toggleBtn.textContent = "＋ 追加";
+
 });
+
+

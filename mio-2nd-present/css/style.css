@@ -403,3 +403,13 @@ td.editing {
   background: #555;
   color: white;
 }
+
+/* 追加画面オープン時はカウントダウンを上に移動 */
+.add-box.open ~ .countdown-box {
+  bottom: 330px !important;
+}
+
+/* 追加画面オープン時は追加ボタンも上へ */
+.add-box.open ~ #toggleAddBox {
+  bottom: 330px !important;
+}
