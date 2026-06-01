@@ -158,7 +158,6 @@ td.editing {
 /* ===========================
    追加フォーム（スライドアップ対応）
 =========================== */
-/* add-box を普段は後ろに下げる */
 .add-box {
   position: fixed;
   bottom: 0;
@@ -169,7 +168,7 @@ td.editing {
   box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
   backdrop-filter: blur(6px);
   border-top: 2px solid #c62828;
-  z-index: -1;   /* ← 普段は後ろ（重要） */
+  z-index: -1;
   color: #333;
 
   max-height: 0;
@@ -181,7 +180,7 @@ td.editing {
 .add-box.open {
   padding: 15px;
   max-height: 520px;
-  z-index: 9999;   /* ← 開いた時だけ前に出る */
+  z-index: 9999;
 }
 
 /* 入力欄を縦並びに */
@@ -198,23 +197,25 @@ td.editing {
 /* ボタン並び（左寄せ＋余白） */
 .add-buttons {
   margin-top: 10px;
-  text-align: left;   /* ← 左寄せに変更 */
-  padding-left: 10px; /* ← 左に余白を追加 */
+  text-align: left;
+  padding-left: 10px;
 }
 
-/* ボタン（固定長で少し長め） */
+/* 追加画面内のボタン（スコープ限定） */
 .add-buttons button {
-  width: 120px;       /* ← 固定長（長め） */
-  padding: 10px 0;    /* ← 横幅固定なので左右は0でOK */
+  width: 120px;
+  padding: 10px 0;
   border-radius: 6px;
   border: none;
   font-size: 15px;
   cursor: pointer;
-  margin-right: 12px; /* ← ボタン間の余白 */
+  margin-right: 12px;
+  background: #c62828;
+  color: white;
 }
 
 /* クリアボタン */
-.clear-btn {
+.add-buttons .clear-btn {
   background: #555;
   color: white;
 }
@@ -304,8 +305,8 @@ td.editing {
 .countdown-box {
   position: fixed;
   bottom: 130px;
-  left: 20px;      /* ← 左寄せ */
-  transform: none; /* ← 中央寄せ解除 */
+  left: 20px;
+  transform: none;
   padding: 20px 28px;
   border-radius: 18px;
   font-size: 22px;
@@ -391,4 +392,3 @@ td.editing {
 .add-box.open ~ #toggleAddBox {
   bottom: 420px !important;
 }
-
