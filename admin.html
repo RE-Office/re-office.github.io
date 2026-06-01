@@ -1,25 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>商品データ管理</title>
+</head>
+
+<body>
+<h1>商品データ管理</h1>
+
+<form id="updateForm">
+  <textarea id="jsonInput" rows="20" cols="80"></textarea><br>
+  <button type="submit">更新する</button>
+</form>
+
+<pre id="status" style="white-space: pre-wrap; background:#eee; padding:10px;"></pre>
+
 <script>
-const API = "https://script.google.com/macros/s/AKfycbzkJHQo-2Qih294C1xR8ROpnO_ouRCn9Rv5gN2kIf5kz5JAESccp7JbsFiNLzagXXfG-w/exec";
+const API = "https://script.google.com/macros/s/XXXXX/exec";  // ← 自分のURLに
 
 // 初期読み込み
-fetch(API + "?t=" + Date.now())
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("jsonInput").value = JSON.stringify(data, null, 2);
-  });
+(async () => {
+  try {
+    const res = await fetch(API + "?t=" + Date.now());
+    const text = await res.text();
 
-// 更新
+    try {
+      const data = JSON.parse(text);
+      document.getElementById("jsonInput").value = JSON.stringify(data, null, 2);
+    } catch (jsonErr) {
+      document.getElementById("status").textContent =
+        "JSON parse error:\n" + jsonErr + "\n\nResponse text:\n" + text;
+    }
+
+  } catch (err) {
+    document.getElementById("status").textContent =
+      "Fetch error:\n" + err;
+  }
+})();
+
+// 更新処理
 document.getElementById("updateForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const newJson = document.getElementById("jsonInput").value;
 
-  const res = await fetch(API, {
-    method: "POST",
-    body: newJson
-  });
+  try {
+    const res = await fetch(API, {
+      method: "POST",
+      body: newJson
+    });
 
-  const text = await res.text();
-  document.getElementById("status").innerText = text;
+    const text = await res.text();
+    document.getElementById("status").textContent = text;
+
+  } catch (err) {
+    document.getElementById("status").textContent =
+      "Fetch error:\n" + err;
+  }
 });
 </script>
+
+</body>
+</html>
