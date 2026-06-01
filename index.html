@@ -2,20 +2,108 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>プレゼント候補一覧</title>
+<title>🎄 プレゼント候補一覧 🎁</title>
 
 <style>
-  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  table, th, td { border: 1px solid #333; }
-  th, td { padding: 8px; }
-  th { background: #f2f2f2; cursor: pointer; }
-  #searchBox { width: 200px; padding: 6px; margin-top: 10px; }
+  body {
+    font-family: "Segoe UI", "Hiragino Sans", sans-serif;
+    background: linear-gradient(135deg, #ffefef, #fff8e6);
+    padding: 30px;
+    color: #333;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 700;
+    font-size: 32px;
+    color: #b30000;
+    text-shadow: 0 0 8px rgba(255, 200, 200, 0.8);
+  }
+
+  #searchBox {
+    width: 260px;
+    padding: 10px 14px;
+    border: 2px solid #c62828;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    background: #fff;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.15);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  }
+
+  th {
+    background: linear-gradient(90deg, #c62828, #8e0000);
+    color: #fff;
+    padding: 14px;
+    cursor: pointer;
+    font-weight: 600;
+    border-bottom: 2px solid #b71c1c;
+    letter-spacing: 0.5px;
+  }
+
+  th:hover {
+    background: linear-gradient(90deg, #d84315, #ad0000);
+  }
+
+  td {
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+  }
+
+  tr:nth-child(even) {
+    background: #fffdf7;
+  }
+
+  tr:hover {
+    background: #fff3e0;
+  }
+
+  a {
+    color: #00695c;
+    font-weight: 600;
+  }
+
+  a:hover {
+    text-decoration: underline;
+    color: #004d40;
+  }
+
+  /* クリスマスの小さな装飾 */
+  .snow {
+    position: fixed;
+    top: -10px;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    pointer-events: none;
+    background-image: radial-gradient(white 2px, transparent 2px);
+    background-size: 20px 20px;
+    animation: snow 10s linear infinite;
+    opacity: 0.6;
+  }
+
+  @keyframes snow {
+    from { transform: translateY(0); }
+    to { transform: translateY(100vh); }
+  }
 </style>
 </head>
 
 <body>
 
-<h1>プレゼント候補一覧</h1>
+<div class="snow"></div>
+
+<h1>🎄 プレゼント候補一覧 🎁</h1>
 
 検索：<input id="searchBox" placeholder="キーワード検索">
 
@@ -37,9 +125,8 @@ const API = "https://script.google.com/macros/s/AKfycbzkJHQo-2Qih294C1xR8ROpnO_o
 
 let originalData = [];
 let filteredData = [];
-let sortState = {}; // { key: "type", order: "asc" }
+let sortState = {};
 
-// 表描画
 function renderTable(data) {
   const tbody = document.querySelector("#giftTable tbody");
   tbody.innerHTML = "";
@@ -57,9 +144,7 @@ function renderTable(data) {
   });
 }
 
-// ソート処理
 function sortData(key) {
-  // 昇順/降順の切り替え
   if (sortState.key === key) {
     sortState.order = sortState.order === "asc" ? "desc" : "asc";
   } else {
@@ -71,7 +156,6 @@ function sortData(key) {
     let x = a[key];
     let y = b[key];
 
-    // 数値ソート（価格）
     if (key === "price") {
       x = parseInt(x.replace(/[^0-9]/g, "")) || 0;
       y = parseInt(y.replace(/[^0-9]/g, "")) || 0;
@@ -85,7 +169,6 @@ function sortData(key) {
   renderTable(filteredData);
 }
 
-// 検索処理
 function filterData(keyword) {
   keyword = keyword.toLowerCase();
 
@@ -97,7 +180,6 @@ function filterData(keyword) {
     item.url.toLowerCase().includes(keyword)
   );
 
-  // ソート状態があれば適用
   if (sortState.key) {
     sortData(sortState.key);
   } else {
@@ -105,7 +187,6 @@ function filterData(keyword) {
   }
 }
 
-// 初期読み込み
 (async () => {
   const res = await fetch(API + "?t=" + Date.now(), { cache: "no-store" });
   const data = await res.json();
@@ -116,12 +197,10 @@ function filterData(keyword) {
   renderTable(data);
 })();
 
-// 検索イベント
 document.getElementById("searchBox").addEventListener("input", e => {
   filterData(e.target.value);
 });
 
-// ソートイベント
 document.querySelectorAll("#giftTable th").forEach(th => {
   th.addEventListener("click", () => {
     const key = th.dataset.key;
