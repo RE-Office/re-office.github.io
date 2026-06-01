@@ -7,6 +7,19 @@
 </head>
 
 <body>
+  <script>
+    const PASS = "0621";
+
+    let input = "";
+    while (input !== PASS) {
+      input = prompt("パスワードを入力してください");
+      if (input === null) {
+        // キャンセルされたらページを閉じる
+        document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:40px;'>アクセスが拒否されました</h2>";
+        throw new Error("Access denied");
+      }
+    }
+  </script>
 
   <!-- ① 追加フォーム（スライドアップ） -->
   <div class="add-box">
