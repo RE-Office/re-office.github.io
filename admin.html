@@ -3,59 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <title>商品データ管理</title>
+<style>
+  table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+  th, td { border: 1px solid #ccc; padding: 6px; }
+  th { background: #f2f2f2; }
+  button { margin: 4px; }
+</style>
 </head>
 
 <body>
 <h1>商品データ管理</h1>
 
-<form id="updateForm">
-  <textarea id="jsonInput" rows="20" cols="80"></textarea><br>
-  <button type="submit">更新する</button>
-</form>
+<!-- 追加フォーム -->
+<h3>商品追加</h3>
+<div>
+  種別: <input id="addType">
+  メーカー: <input id="addMaker">
+  商品名: <input id="addName">
+  価格: <input id="addPrice">
+  URL: <input id="addUrl" size="40">
+  <button id="addBtn">追加</button>
+</div>
 
-<pre id="status" style="white-space: pre-wrap; background:#eee; padding:10px;"></pre>
+<!-- 編集テーブル -->
+<h3>商品一覧（ローカル編集）</h3>
+<table id="editTable">
+  <thead>
+    <tr>
+      <th>種別</th>
+      <th>メーカー</th>
+      <th>商品名</th>
+      <th>価格</th>
+      <th>URL</th>
+      <th>削除</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<!-- 操作ボタン -->
+<div style="margin-top:20px;">
+  <button id="saveBtn">確定（スプレッドシートへ反映）</button>
+  <button id="cancelBtn">キャンセル（元に戻す）</button>
+</div>
+
+<pre id="status" style="white-space:pre-wrap;background:#eee;padding:10px;margin-top:20px;"></pre>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbzkJHQo-2Qih294C1xR8ROpnO_ouRCn9Rv5gN2kIf5kz5JAESccp7JbsFiNLzagXXfG-w/exec";  // ← 自分のURLに
+const API = "https://script.google.com/macros/s/AKfycbzkJHQo-2Qih294C1xR8ROpnO_ouRCn9Rv5gN2kIf5kz5JAESccp7JbsFiNLzagXXfG-w/exec"; 
+
+let localData = [];   // ローカル編集用データ
+let originalData = []; // キャンセル用バックアップ
+
+// 表を描画
+function renderTable() {
+  const tbody = document.querySelector("#editTable tbody");
+  tbody.innerHTML = "";
+
+  localData.forEach((item, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${item.type}</td>
+      <td>${item.maker}</td>
+      <td>${item.name}</td>
+      <td>${item.price}</td>
+      <td><a href="${item.url}" target="_blank">${item.url}</a></td>
+      <td><button data-index="${index}" class="delBtn">削除</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // 削除ボタンにイベント付与
+  document.querySelectorAll(".delBtn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const idx = btn.dataset.index;
+      localData.splice(idx, 1);
+      renderTable();
+    });
+  });
+}
 
 // 初期読み込み
 (async () => {
   try {
     const res = await fetch(API + "?t=" + Date.now());
     const text = await res.text();
-
-    try {
-      const data = JSON.parse(text);
-      document.getElementById("jsonInput").value = JSON.stringify(data, null, 2);
-    } catch (jsonErr) {
-      document.getElementById("status").textContent =
-        "JSON parse error:\n" + jsonErr + "\n\nResponse text:\n" + text;
-    }
-
+    originalData = JSON.parse(text);
+    localData = JSON.parse(JSON.stringify(originalData)); // deep copy
+    renderTable();
   } catch (err) {
-    document.getElementById("status").textContent =
-      "Fetch error:\n" + err;
+    document.getElementById("status").textContent = "Fetch error:\n" + err;
   }
 })();
 
-// 更新処理
-document.getElementById("updateForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+// 追加ボタン
+document.getElementById("addBtn").addEventListener("click", () => {
+  const item = {
+    type: document.getElementById("addType").value,
+    maker: document.getElementById("addMaker").value,
+    name: document.getElementById("addName").value,
+    price: document.getElementById("addPrice").value,
+    url: document.getElementById("addUrl").value
+  };
 
-  const newJson = document.getElementById("jsonInput").value;
+  localData.push(item);
+  renderTable();
+});
 
+// キャンセル（元に戻す）
+document.getElementById("cancelBtn").addEventListener("click", () => {
+  localData = JSON.parse(JSON.stringify(originalData));
+  renderTable();
+  document.getElementById("status").textContent = "変更をキャンセルしました";
+});
+
+// 確定（スプレッドシートへ反映）
+document.getElementById("saveBtn").addEventListener("click", async () => {
   try {
     const res = await fetch(API, {
       method: "POST",
-      body: newJson
+      body: JSON.stringify(localData)
     });
-
     const text = await res.text();
     document.getElementById("status").textContent = text;
-
   } catch (err) {
-    document.getElementById("status").textContent =
-      "Fetch error:\n" + err;
+    document.getElementById("status").textContent = "Fetch error:\n" + err;
   }
 });
 </script>
