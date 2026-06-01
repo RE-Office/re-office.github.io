@@ -1,394 +1,84 @@
-/* ===========================
-   基本レイアウト
-=========================== */
-body {
-  font-family: "Nunito", "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", sans-serif;
-  background: url("https://raw.githubusercontent.com/RE-Office/re-office.github.io/main/mio-2nd-present/images/mios_birth_2.jpg")
-              no-repeat center center fixed;
-  background-size: cover;
-  padding: 30px;
-  color: #fff;
-  padding-bottom: 200px;
-  overflow-x: hidden;
-}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Present List</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
 
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.45);
-  pointer-events: none;
-  z-index: -1;
-}
+<body>
 
-/* ===========================
-   タイトル
-=========================== */
-h1 {
-  text-align: center;
-  margin-bottom: 25px;
-  font-weight: 700;
-  font-size: 32px;
-  color: #ffdddd;
-  text-shadow: 0 0 12px rgba(255, 200, 200, 0.9);
-}
+  <!-- ① 追加フォーム（スライドアップ） -->
+  <div class="add-box">
+    <h3 style="margin:0 0 10px 0;">🎁 追加</h3>
 
-/* ===========================
-   検索ボックス
-=========================== */
-#searchBox {
-  width: 260px;
-  padding: 10px 14px;
-  border: 2px solid #ffcccc;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  font-size: 15px;
-  background: #ffffffcc;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-}
+    <input id="addType" placeholder="種別">
+    <input id="addMaker" placeholder="メーカー">
+    <input id="addName" placeholder="商品名">
+    <input id="addPrice" placeholder="価格">
+    <input id="addUrl" placeholder="URL">
 
-/* ===========================
-   表（透けるように修正）
-=========================== */
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: transparent !important;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
-  color: #333;
-}
+    <div class="add-buttons">
+      <button id="addBtn">追加</button>
+      <button id="clearBtn" class="clear-btn">クリア</button>
+    </div>
+  </div>
 
-/* ヘッダー */
-th {
-  background: linear-gradient(90deg, #b30000, #7a0000);
-  color: #fff;
-  padding: 14px;
-  cursor: pointer;
-  font-weight: 700;
-  border-bottom: 2px solid #900;
-  font-family: "M PLUS Rounded 1c", "Nunito", sans-serif;
-  font-size: 17px;
-}
+  <!-- ② カウントダウン -->
+  <div id="countdownBox" class="countdown-box"></div>
 
-/* セル共通（かわいく太文字） */
-#giftTable td,
-#giftTable th {
-  font-family: "M PLUS Rounded 1c", "Nunito", "Hiragino Maru Gothic ProN", sans-serif;
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.6px;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.12);
-  padding: 16px 14px;
-}
+  <!-- ③ ＋追加ボタン（常時表示） -->
+  <button id="toggleAddBox" class="toggle-add">＋ 追加</button>
 
-/* 値の文字色 */
-#giftTable td {
-  color: #333;
-}
+  <!-- ④ タイトル -->
+  <h1>🎁 Present List</h1>
 
-/* ★ 透ける背景（最強版） */
-#giftTable tbody td {
-  background: rgba(255,255,255,0.65) !important;
-  backdrop-filter: blur(3px);
-  transition: background 0.2s;
-}
+  <!-- 検索ボックス -->
+  <input type="text" id="searchBox" placeholder="検索ワードを入力v1">
 
-/* 奇数行はさらに淡く */
-#giftTable tbody tr:nth-child(odd) td {
-  background: rgba(255,255,255,0.45) !important;
-}
+  <!-- トースト通知 -->
+  <div id="toast" class="toast"></div>
 
-/* ホバー時にふわっと濃く */
-#giftTable tbody tr:hover td {
-  background: rgba(255,255,255,0.85) !important;
-}
+  <!-- ⑤ 表 -->
+  <table id="giftTable">
+    <thead>
+      <tr>
+        <th data-key="type">種別</th>
+        <th data-key="maker">メーカー</th>
+        <th data-key="name">商品名</th>
+        <th data-key="price">価格</th>
+        <th data-key="url">URL</th>
+        <th>編集</th>
+        <th>削除</th>
+      </tr>
+    </thead>
+    <tbody id="giftBody">
+      <!-- JSで挿入 -->
+    </tbody>
+  </table>
 
-/* 編集中セル */
-td.editing {
-  background: #fff0d6 !important;
-}
+  <!-- 編集コントロール -->
+  <div class="controls" id="controls">
+    <button id="saveBtn">保存</button>
+    <button id="cancelBtn">キャンセル</button>
+  </div>
 
-/* ===========================
-   コントロールボタン
-=========================== */
-.controls {
-  margin-top: 20px;
-  text-align: right;
-  display: none;
-}
+  <!-- ローディング -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loader">Loading...</div>
+  </div>
 
-.controls button {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 6px;
-  margin-left: 10px;
-  font-size: 14px;
-  cursor: pointer;
-}
+  <!-- 雪 -->
+  <script src="js/snow.js"></script>
 
-#saveBtn { background: #2e7d32; color: white; }
-#cancelBtn { background: #b71c1c; color: white; }
+  <!-- 編集処理 -->
+  <script src="js/edit.js"></script>
 
-/* 編集ボタン */
-.edit-btn {
-  background: #ff9800;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
+  <!-- トースト通知 -->
+  <script src="js/toast.js"></script>
 
-/* 保存ボタン */
-.save-row-btn {
-  background: #4caf50;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
+  <!-- メイン処理 -->
+  <script src="js/app.js"></script>
 
-/* ===========================
-   追加フォーム（スライドアップ対応）
-=========================== */
-.add-box {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(255,255,255,0.95);
-  padding: 0 15px;
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
-  backdrop-filter: blur(6px);
-  border-top: 2px solid #c62828;
-  z-index: -1;
-  color: #333;
-
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.45s ease;
-}
-
-/* 開いた時だけ前面に出す */
-.add-box.open {
-  padding: 15px;
-  max-height: 520px;
-  z-index: 9999;
-}
-
-/* 入力欄を縦並びに */
-.add-box input {
-  display: block;
-  width: 95%;
-  margin: 6px auto;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-}
-
-/* ボタン並び（左寄せ＋余白） */
-.add-buttons {
-  margin-top: 10px;
-  text-align: left;
-  padding-left: 10px;
-}
-
-/* 追加画面内のボタン（スコープ限定） */
-.add-buttons button {
-  width: 120px;
-  padding: 10px 0;
-  border-radius: 6px;
-  border: none;
-  font-size: 15px;
-  cursor: pointer;
-  margin-right: 12px;
-  background: #c62828;
-  color: white;
-}
-
-/* クリアボタン */
-.add-buttons .clear-btn {
-  background: #555;
-  color: white;
-}
-
-/* ===========================
-   雪アニメ
-=========================== */
-.snowflake {
-  position: fixed;
-  top: -10px;
-  color: white;
-  font-size: 10px;
-  pointer-events: none;
-  animation-name: fall, sway;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-@keyframes fall {
-  to { transform: translateY(110vh); }
-}
-
-@keyframes sway {
-  0% { margin-left: 0; }
-  50% { margin-left: 20px; }
-  100% { margin-left: 0; }
-}
-
-/* ===========================
-   トースト通知
-=========================== */
-.toast {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: rgba(255,255,255,0.9);
-  color: #333;
-  padding: 12px 18px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  font-size: 15px;
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  z-index: 9999;
-}
-
-.toast.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ===========================
-   ローディング
-=========================== */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.55);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-  backdrop-filter: blur(3px);
-}
-
-.loader {
-  color: #fff;
-  font-size: 22px;
-  font-weight: 600;
-  text-shadow: 0 0 8px rgba(255,255,255,0.8);
-  animation: pulse 1.2s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.4; }
-  50% { opacity: 1; }
-  100% { opacity: 0.4; }
-}
-
-/* ===========================
-   カウントダウン（虹色）
-=========================== */
-.countdown-box {
-  position: fixed;
-  bottom: 130px;
-  left: 20px;
-  transform: none;
-  padding: 20px 28px;
-  border-radius: 18px;
-  font-size: 22px;
-  font-weight: 600;
-  color: #333;
-  z-index: 9999;
-  white-space: nowrap;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-
-  background: linear-gradient(
-    90deg,
-    rgba(255, 120, 120, 0.85),
-    rgba(255, 180, 120, 0.85),
-    rgba(255, 255, 120, 0.85),
-    rgba(120, 255, 180, 0.85),
-    rgba(120, 180, 255, 0.85),
-    rgba(180, 120, 255, 0.85),
-    rgba(255, 120, 220, 0.85)
-  );
-  background-size: 400% 400%;
-  animation: rainbowMove 12s ease infinite;
-}
-
-@keyframes rainbowMove {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* 数字アニメ */
-.countdown-box .num {
-  display: inline-block;
-  animation: pop 0.35s ease;
-}
-
-@keyframes pop {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.35); }
-  100% { transform: scale(1); }
-}
-
-/* 色付きワード */
-.countdown-box .name { color: #ff4fa3; font-weight: 700; }
-.countdown-box .age { color: #000; font-weight: 700; }
-.countdown-box .birthday { color: #ff2b2b; font-weight: 700; }
-
-/* 誕生日当日 */
-.countdown-box.happy {
-  background: rgba(255, 230, 240, 0.95);
-  color: #d4006e;
-  font-size: 24px;
-  font-weight: 700;
-  text-shadow: 0 0 8px rgba(255,150,200,0.8);
-}
-
-/* ===========================
-   追加ボタン（大きく修正）
-=========================== */
-.toggle-add {
-  position: fixed;
-  bottom: 90px;
-  right: 20px;
-  background: #c62828;
-  color: white;
-  padding: 16px 24px;
-  border-radius: 50px;
-  border: none;
-  font-size: 20px;
-  font-weight: 800;
-  cursor: pointer;
-  z-index: 200;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-/* ===========================
-   追加画面オープン時の自動移動
-=========================== */
-.add-box.open ~ .countdown-box {
-  bottom: 420px !important;
-}
-
-.add-box.open ~ #toggleAddBox {
-  bottom: 420px !important;
-}
+</body>
+</html>
