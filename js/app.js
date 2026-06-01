@@ -226,8 +226,11 @@ function updateCountdown() {
   const secs = Math.floor((diff / 1000) % 60);
 
   box.classList.remove("happy");
+
   box.innerHTML =
-    `美桜の2歳の誕生日まで：` +
+    `<span class="name">美桜</span>の` +
+    `<span class="age">2歳</span>の` +
+    `<span class="birthday">誕生日</span>まで：` +
     `<span class="num">${days}</span>日 ` +
     `<span class="num">${hours}</span>時間 ` +
     `<span class="num">${mins}</span>分 ` +
@@ -236,3 +239,4 @@ function updateCountdown() {
 
 setInterval(updateCountdown, 1000);
 updateCountdown();
+
