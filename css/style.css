@@ -57,7 +57,7 @@ table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  background: transparent !important; /* ← 透けるように修正 */
+  background: transparent !important;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0,0,0,0.3);
@@ -70,14 +70,26 @@ th {
   color: #fff;
   padding: 14px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
   border-bottom: 2px solid #900;
+  font-family: "M PLUS Rounded 1c", "Nunito", sans-serif;
+  font-size: 17px;
 }
 
-/* セル共通 */
-td {
-  padding: 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+/* セル共通（かわいく太文字） */
+#giftTable td,
+#giftTable th {
+  font-family: "M PLUS Rounded 1c", "Nunito", "Hiragino Maru Gothic ProN", sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.12);
+  padding: 16px 14px;
+}
+
+/* 値の文字色 */
+#giftTable td {
+  color: #333;
 }
 
 /* ★ 透ける背景（最強版） */
