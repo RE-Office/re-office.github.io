@@ -158,6 +158,7 @@ td.editing {
 /* ===========================
    追加フォーム（スライドアップ対応）
 =========================== */
+/* add-box を普段は後ろに下げる */
 .add-box {
   position: fixed;
   bottom: 0;
@@ -168,7 +169,7 @@ td.editing {
   box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
   backdrop-filter: blur(6px);
   border-top: 2px solid #c62828;
-  z-index: 150;
+  z-index: 10;   /* ← 下げる（重要） */
   color: #333;
 
   max-height: 0;
@@ -176,11 +177,13 @@ td.editing {
   transition: max-height 0.45s ease;
 }
 
-/* 表示状態（クリアボタン見切れ防止） */
+/* 開いた時だけ前面に出す */
 .add-box.open {
   padding: 15px;
-  max-height: 520px; /* ← 高さを増やした */
+  max-height: 520px;
+  z-index: 9999;   /* ← 前に出す */
 }
+
 
 /* 入力欄を縦並びに */
 .add-box input {
