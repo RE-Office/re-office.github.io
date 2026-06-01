@@ -8,6 +8,29 @@
 
 <body>
 
+  <!-- ① 追加フォーム（スライドアップ） -->
+  <div class="add-box">
+    <h3 style="margin:0 0 10px 0;">🎁 追加</h3>
+
+    <input id="addType" placeholder="種別">
+    <input id="addMaker" placeholder="メーカー">
+    <input id="addName" placeholder="商品名">
+    <input id="addPrice" placeholder="価格">
+    <input id="addUrl" placeholder="URL">
+
+    <div class="add-buttons">
+      <button id="addBtn">追加</button>
+      <button id="clearBtn" class="clear-btn">クリア</button>
+    </div>
+  </div>
+
+  <!-- ② カウントダウン -->
+  <div id="countdownBox" class="countdown-box"></div>
+
+  <!-- ③ ＋追加ボタン（常時表示） -->
+  <button id="toggleAddBox" class="toggle-add">＋ 追加</button>
+
+  <!-- ④ タイトル -->
   <h1>🎁 Present List</h1>
 
   <!-- 検索ボックス -->
@@ -16,10 +39,7 @@
   <!-- トースト通知 -->
   <div id="toast" class="toast"></div>
 
-  <!-- カウントダウン -->
-  <div id="countdownBox" class="countdown-box"></div>
-
-  <!-- 表 -->
+  <!-- ⑤ 表 -->
   <table id="giftTable">
     <thead>
       <tr>
@@ -40,25 +60,6 @@
   <div class="controls" id="controls">
     <button id="saveBtn">保存</button>
     <button id="cancelBtn">キャンセル</button>
-  </div>
-
-  <!-- ＋追加ボタン（常時表示） -->
-  <button id="toggleAddBox" class="toggle-add">＋ 追加</button>
-
-  <!-- 追加フォーム（スライドアップ） -->
-  <div class="add-box">
-    <h3 style="margin:0 0 10px 0;">🎁 追加</h3>
-
-    <input id="addType" placeholder="種別">
-    <input id="addMaker" placeholder="メーカー">
-    <input id="addName" placeholder="商品名">
-    <input id="addPrice" placeholder="価格">
-    <input id="addUrl" placeholder="URL">
-
-    <div class="add-buttons">
-      <button id="addBtn">追加</button>
-      <button id="clearBtn" class="clear-btn">クリア</button>
-    </div>
   </div>
 
   <!-- ローディング -->
