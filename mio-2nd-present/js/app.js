@@ -4,11 +4,7 @@ let originalData = [];
 let localData = [];
 let filteredData = [];
 let sortState = {};
-let edited = false;
 
-/* ===========================
-   テーブル描画
-=========================== */
 function renderTable(data) {
   const tbody = document.querySelector("#giftTable tbody");
   tbody.innerHTML = "";
@@ -16,20 +12,22 @@ function renderTable(data) {
   data.forEach((item, index) => {
     const tr = document.createElement("tr");
 
-    ["type","maker","name","price","url"].forEach(key => {
-      const td = document.createElement("td");
+  ["type","maker","name","price","url"].forEach(key => {
+    const td = document.createElement("td");
 
-      if (key === "url") {
-        const a = document.createElement("a");
-        a.href = item[key];
-        a.target = "_blank";
-        a.textContent = "商品ページへ";
-        td.appendChild(a);
-      } else {
-        td.textContent = item[key];
-      }
-      tr.appendChild(td);
-    });
+    if (key === "url") {
+      // 通常表示は「商品ページへ」
+      const a = document.createElement("a");
+      a.href = item[key];
+      a.target = "_blank";
+      a.textContent = "商品ページへ";
+      td.appendChild(a);
+    } else {
+      td.textContent = item[key];
+    }
+    tr.appendChild(td);
+  });
+
 
     // 編集ボタン
     const editTd = document.createElement("td");
@@ -64,9 +62,6 @@ function renderTable(data) {
   });
 }
 
-/* ===========================
-   ソート
-=========================== */
 function sortData(key) {
   if (sortState.key === key) {
     sortState.order = sortState.order === "asc" ? "desc" : "asc";
@@ -92,9 +87,6 @@ function sortData(key) {
   renderTable(filteredData);
 }
 
-/* ===========================
-   検索フィルタ
-=========================== */
 function filterData(keyword) {
   keyword = keyword.toLowerCase();
 
@@ -113,11 +105,8 @@ function filterData(keyword) {
   }
 }
 
-/* ===========================
-   初期データ読み込み
-=========================== */
 (async () => {
-  showLoading();
+  showLoading();   // ← ここに追加
 
   const res = await fetch(API + "?t=" + Date.now());
   const data = await res.json();
@@ -129,12 +118,10 @@ function filterData(keyword) {
   renderTable(localData);
   enableEditing(localData, filterData);
 
-  hideLoading();
+  hideLoading();   // ← ここに追加
 })();
 
-/* ===========================
-   イベント
-=========================== */
+
 document.getElementById("searchBox").addEventListener("input", e => {
   filterData(e.target.value);
 });
@@ -145,23 +132,14 @@ document.querySelectorAll("#giftTable th[data-key]").forEach(th => {
   });
 });
 
-/* ===========================
-   ★ 追加ボタン（商品名必須チェック）
-=========================== */
 document.getElementById("addBtn").addEventListener("click", () => {
-  const type  = addType.value.trim();
-  const maker = addMaker.value.trim();
-  const name  = addName.value.trim();
-  const price = addPrice.value.trim();
-  const url   = addUrl.value.trim();
-
-  // ★ 商品名が空なら追加拒否
-  if (name === "") {
-    showToast("商品名を入力してください", "error");
-    return;
-  }
-
-  const item = { type, maker, name, price, url };
+  const item = {
+    type: addType.value,
+    maker: addMaker.value,
+    name: addName.value,
+    price: addPrice.value,
+    url: addUrl.value
+  };
 
   localData.push(item);
   edited = true;
@@ -169,18 +147,8 @@ document.getElementById("addBtn").addEventListener("click", () => {
   filterData(document.getElementById("searchBox").value);
 
   showToast("追加しました");
-
-  // 入力欄クリア
-  clearAddFields();
-
-  // 自動で閉じる
-  addBox.classList.remove("open");
-  toggleBtn.textContent = "＋ 追加";
 });
 
-/* ===========================
-   キャンセル
-=========================== */
 document.getElementById("cancelBtn").addEventListener("click", () => {
   localData = JSON.parse(JSON.stringify(originalData));
   edited = false;
@@ -191,12 +159,9 @@ document.getElementById("cancelBtn").addEventListener("click", () => {
   showToast("キャンセルしました");
 });
 
-/* ===========================
-   保存
-=========================== */
 document.getElementById("saveBtn").addEventListener("click", async () => {
   try {
-    showLoading();
+    showLoading();   // ← ここに追加
 
     await fetch(API, {
       method: "POST",
@@ -207,7 +172,7 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
     edited = false;
     updateButtons();
 
-    // 再読み込み
+    // 🔥 再読み込み
     const res2 = await fetch(API + "?t=" + Date.now());
     const newData = await res2.json();
 
@@ -221,13 +186,11 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   } catch (err) {
     showToast("保存エラー");
   } finally {
-    hideLoading();
+    hideLoading();   // ← ここに追加
   }
 });
 
-/* ===========================
-   ローディング
-=========================== */
+
 function showLoading() {
   document.getElementById("loadingOverlay").style.display = "flex";
 }
@@ -236,20 +199,21 @@ function hideLoading() {
   document.getElementById("loadingOverlay").style.display = "none";
 }
 
-/* ===========================
-   カウントダウン
-=========================== */
 function updateCountdown() {
   const box = document.getElementById("countdownBox");
   const now = new Date();
 
+  // 誕生日（今年）
   let target = new Date(now.getFullYear(), 5, 21, 0, 0, 0);
+
+  // 誕生日を過ぎていたら来年
   if (now > target) {
     target = new Date(now.getFullYear() + 1, 5, 21, 0, 0, 0);
   }
 
   const diff = target - now;
 
+  // 誕生日当日
   if (diff <= 0) {
     box.classList.add("happy");
     box.textContent = "🎉 Happy Birthday 美桜！🎂";
@@ -276,15 +240,15 @@ function updateCountdown() {
 setInterval(updateCountdown, 1000);
 updateCountdown();
 
-/* ===========================
-   追加フォーム開閉
-=========================== */
+// 追加フォーム開閉
 const toggleBtn = document.getElementById("toggleAddBox");
 const addBox = document.querySelector(".add-box");
 
+// 追加フォーム開閉
 toggleBtn.addEventListener("click", () => {
   addBox.classList.toggle("open");
 
+  // ボタンの表示切り替え
   if (addBox.classList.contains("open")) {
     toggleBtn.textContent = "✕ 閉じる";
   } else {
@@ -292,15 +256,31 @@ toggleBtn.addEventListener("click", () => {
   }
 });
 
-/* ===========================
-   入力欄クリア
-=========================== */
+
+// 入力欄クリア関数
 function clearAddFields() {
-  addType.value = "";
-  addMaker.value = "";
-  addName.value = "";
-  addPrice.value = "";
-  addUrl.value = "";
+  document.getElementById("addType").value = "";
+  document.getElementById("addMaker").value = "";
+  document.getElementById("addName").value = "";
+  document.getElementById("addPrice").value = "";
+  document.getElementById("addUrl").value = "";
 }
 
+// クリアボタン
 document.getElementById("clearBtn").addEventListener("click", clearAddFields);
+
+document.getElementById("addBtn").addEventListener("click", () => {
+  const name = document.getElementById("addName").value.trim();
+
+  // 商品名が空なら追加拒否
+  if (name === "") {
+    showToast("商品名を入力してください", "error");
+    return; // ← 追加処理を止める
+  }
+
+  // ここから先は通常の追加処理
+  clearAddFields();
+  addBox.classList.remove("open");
+  toggleBtn.textContent = "＋ 追加";
+});
+
