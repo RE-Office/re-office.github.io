@@ -1,4 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>商品データ管理</title>
+</head>
+
+<body>
+<h1>商品データ管理</h1>
+
+<form id="updateForm">
+  <textarea id="jsonInput" rows="20" cols="80"></textarea><br>
+  <button type="submit">更新する</button>
+</form>
+
+<pre id="status" style="white-space: pre-wrap; background:#eee; padding:10px;"></pre>
+
 <script>
+(async () => {
+  try {
+    const res = await fetch("data.json?cachebuster=" + Date.now());
+    const data = await res.json();
+    document.getElementById("jsonInput").value = JSON.stringify(data, null, 2);
+  } catch (err) {
+    document.getElementById("status").textContent =
+      "初期読み込みエラー:\n" + err;
+    console.error(err);
+  }
+})();
+
 document.getElementById("updateForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -20,17 +49,21 @@ document.getElementById("updateForm").addEventListener("submit", async (e) => {
       }
     );
 
-    const text = await res.text();  // ← レスポンスの中身を全部読む
+    const text = await res.text();
 
-    document.getElementById("status").innerText =
+    document.getElementById("status").textContent =
       `status: ${res.status}\n\nresponse:\n${text}`;
 
     console.log("status:", res.status);
     console.log("response:", text);
 
   } catch (err) {
-    document.getElementById("status").innerText = `fetch error: ${err}`;
-    console.error("fetch error:", err);
+    document.getElementById("status").textContent =
+      "fetch error:\n" + err;
+    console.error(err);
   }
 });
 </script>
+
+</body>
+</html>
