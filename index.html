@@ -1,82 +1,62 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<title>Microsoft Translator テキスト API で英訳を行うサンプルコード</title>
-<meta charset="utf-8">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script>
-
-  "use strict"
-
-  $(function() {
-
-// 文字が入力されたらイベント発火
-
-    $("#word").change(function() {
-
-// 認証トークンを取得するための関数 [getToken] を定義
-// http://docs.microsofttranslator.com/oauth-token.html
-
-      const getToken = function() {
-        const defer = $.Deferred();
-        $.ajax({
-          url: 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken',
-          type: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/jwt',
-            'Ocp-Apim-Subscription-Key': 'Azureで取得したキーの文字列を記述します',
-          },
-        }).done(function(data) {
-
-            const token = data;
-            defer.resolve(token);
-
-        });
-            return defer.promise();
-      };
-
-// 関数 [getToken] 実行後、取得したトークンを 引き渡す
-// フォームから入力したデータとともに、 Microsoft Translator テキストAPIへ送信
-
-      $.when(getToken()).done(function(token) {
-        const key = 'Bearer ' + token;
-        const text = $("#word").val();
-        const response = $.ajax({
-          url: 'https://api.microsofttranslator.com/v2/http.svc/Translate',
-          type: 'GET',
-          data: {
-            'appid': key,
-            'Accept': 'application/xml',
-            'text': text,
-            'to': 'en',
-          },
-        async: false,
-        })
-
-// Translator テキスト APIを通じて取得したデータから、翻訳語が含まれるプロパティを取得
-// replace関数でタグを除去し、翻訳データのみを抽出して表示する
-
-        const data = response.responseText;
-
-        const translation = data.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
-
-        $("#english").text(translation);
-      })
-    })
-  })
- 
-</script>
-</head>
-
-<body>
-
-  <h1>Microsoft Translator テキスト API サンプル</h1>
-  <h2>入力データを英語に翻訳します。</h2>
-
-  <input type="text" id="word" placeholder="何か入力してください" size="40">
-  <div id="english"></div>
-
-
-</body>
-</html>
+<table>
+  <thead>
+    <tr>
+      <th>種別</th>
+      <th>メーカー</th>
+      <th>商品名</th>
+      <th>価格帯</th>
+      <th>メモ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>人形</td>
+      <td>メルちゃん</td>
+      <td>入門セット</td>
+      <td>7,920円</td>
+      <td><a href="https://www.mellchan.com/product/doll/mellchannyuumonset.php" target="_blank">商品ページ</a></td>
+    </tr>
+    <tr>
+      <td>ブロック</td>
+      <td>GAKKEN</td>
+      <td>ニューブロック ミルきらプリンセス</td>
+      <td>6,050円</td>
+      <td><a href="https://newblock.jp/product/83730/" target="_blank">商品ページ</a></td>
+    </tr>
+    <tr>
+      <td>ブロック</td>
+      <td>GAKKEN</td>
+      <td>ニューブロック はじめようセット</td>
+      <td>5,500円</td>
+      <td><a href="https://newblock.jp/product/83717/" target="_blank">商品ページ</a></td>
+    </tr>
+    <tr>
+      <td>ブロック</td>
+      <td>KitWell</td>
+      <td>マグビルド スロープセット 72ピース</td>
+      <td>8,499円</td>
+      <td><a href="https://amzn.asia/d/07XlvpCM" target="_blank">商品ページ</a></td>
+    </tr>
+    <tr>
+      <td>ブロック</td>
+      <td>LEGO</td>
+      <td>デュプロのコンテナ デラックス</td>
+      <td>4,980円</td>
+      <td><a href="https://www.lego.com/ja-jp/product/brick-box-10913?consent-modal=show" target="_blank">商品ページ</a></td>
+    </tr>
+    <tr>
+      <td>ブロック</td>
+      <td>LEGO</td>
+      <td>ミッキーやミニー、プルートとあそぼう♪ミッキーマウス クラブハウス</td>
+      <td>8,280円</td>
+      <td><a href="https://www.lego.com/ja-jp/product/mickey-mouse-clubhouse-with-minnie-pluto-10465" target="_blank">商品ページ</a></td>
+    </tr>
+    <tr>
+      <td>おままごとセット</td>
+      <td>RizKiz</td>
+      <td>未定</td>
+      <td>未定</td>
+      <td><a href="https://rizkiz.jp/" target="_blank">公式サイト</a></td>
+    </tr>
+  </tbody>
+</table>
