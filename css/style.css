@@ -1,0 +1,170 @@
+body {
+  font-family: "Segoe UI", "Hiragino Sans", sans-serif;
+  background: url("https://raw.githubusercontent.com/RE-Office/re-office.github.io/main/images/mios_birth_2.jpg")
+              no-repeat center center fixed;
+  background-size: cover;
+  padding: 30px;
+  color: #fff;
+  padding-bottom: 200px;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45);
+  pointer-events: none;
+  z-index: -1;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 700;
+  font-size: 32px;
+  color: #ffdddd;
+  text-shadow: 0 0 12px rgba(255, 200, 200, 0.9);
+}
+
+#searchBox {
+  width: 260px;
+  padding: 10px 14px;
+  border: 2px solid #ffcccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  background: #ffffffcc;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255,255,255,0.9);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+  color: #333;
+}
+
+th {
+  background: linear-gradient(90deg, #b30000, #7a0000);
+  color: #fff;
+  padding: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  border-bottom: 2px solid #900;
+}
+
+td {
+  padding: 14px;
+  border-bottom: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+  background: #fff7f7;
+}
+
+tr:hover {
+  background: #ffecec;
+}
+
+td.editing {
+  background: #fff0d6;
+}
+
+.controls {
+  margin-top: 20px;
+  text-align: right;
+  display: none;
+}
+
+.controls button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  margin-left: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#saveBtn { background: #2e7d32; color: white; }
+#cancelBtn { background: #b71c1c; color: white; }
+
+.add-box {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.92);
+  padding: 15px;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
+  backdrop-filter: blur(6px);
+  border-top: 2px solid #c62828;
+  z-index: 100;
+  color: #333;
+}
+
+.add-box input {
+  margin: 4px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.add-box button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  background: #c62828;
+  color: white;
+  cursor: pointer;
+}
+
+/* 雪の基本スタイル */
+.snowflake {
+  position: fixed;
+  top: -10px;
+  color: white;
+  font-size: 10px;
+  pointer-events: none;
+  animation-name: fall, sway;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fall {
+  to { transform: translateY(110vh); }
+}
+
+@keyframes sway {
+  0% { margin-left: 0; }
+  50% { margin-left: 20px; }
+  100% { margin-left: 0; }
+}
+
+/* トースト通知 */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(255,255,255,0.9);
+  color: #333;
+  padding: 12px 18px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  font-size: 15px;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  z-index: 9999;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
